@@ -1,0 +1,23 @@
+Added in v3: 
+-SPD determines first to attack
+-Stats can not be lowered to 0
+-Removed base stat objects
+-Optimized setAllStats into constructors
+-Optimized adding moves into setMove function
+-Prints movesets, uses indices as input
+
+Added in v4:
+-MAJOR: Pokemon selection and stats based on .txt files
+-MAJOR: Move selection and stats based on .txt files
+-Added cat OHKO, FLEE, SAME
+
+Added in v5:
+-v5.1: changed var moveType to moveCat
+-v5.1: Accepts all move info
+-v5.2: implemented movePP mechanic for pkmn1
+-v5.3: Implemented moveACC mechanic for pkmn1
+-v5.4: Added cat ACC, EVA
+-v5.4: Added ACC & EVA mechanic
+
+Added in v6:
+-Added cat PREP, PREPR

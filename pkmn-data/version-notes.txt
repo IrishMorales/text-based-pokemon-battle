@@ -7,6 +7,7 @@ To be implemented: (According to importance)
 -ASCII art title
 -print pkmn & move stats after choosing
 -confirm pkmn/move
+-add baseHP
 
 Added in v3: 
 -SPD determines first to attack
@@ -32,7 +33,7 @@ Added in v5:
 Added in v6:
 -Added cat PREP, PREPR
 
-11/2019 Update:
+11/04/2019 Update:
 -Refactored code
 -Added error catching for lvl
 -Changed output messages

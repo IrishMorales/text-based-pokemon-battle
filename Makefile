@@ -5,7 +5,7 @@ OBJECTS = pkmnBattle.cpp pkmn.cpp
 # name of .exe file to be created
 EXEC = pkmnBattle.exe
 # flags to be used
-FLAGS = -Wall
+# FLAGS = -Wall
 
 print:
-	${CC} ${FLAGS} -o ${EXEC} ${OBJECTS}
+	${CC} -o ${EXEC} ${OBJECTS}

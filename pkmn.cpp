@@ -1,5 +1,7 @@
 #include <iostream>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include "pkmn.h"
 using namespace std;
 
@@ -26,121 +28,65 @@ int Pkmn::setStat(int lvl, ifstream& pkmnList) {
 }
 		
 //compute move damage with attacker's lvl, movePWR, attack, and opponent's defense
-int Pkmn::dmg(int lvl, int movePWR, int ATK1, int DEF2) {
-	int finalDmg = static_cast<int>(((2*lvl / 5 + 2) * movePWR * (ATK1/DEF2))/50 + 2);
+int Pkmn::dmg(int lvl, int PWR, int ATK, int DEF) {
+	int finalDmg = static_cast<int>((2*lvl/5+2)*PWR*ATK/DEF/50+2);
 	return finalDmg;
 }
 		
 //modify pkmn stat multipliers with stat-changing moves
-int Pkmn::modMult(int statMult, int movePWR) {
-	statMult += movePWR;
-	if (statMult < -6) statMult = -6;
-	else if (statMult > 6) statMult = 6;
+int Pkmn::modMult(int statMult, int moveMult) {
+	statMult += moveMult;
+	
+	//if statMult is too high or too low
+	if (statMult < -6) 		{statMult = -6;}
+	else if (statMult > 6) 	{statMult = 6;}
+	
 	return statMult;
 }
-		
-//modify pkmn stat with stat multipliers
+
+//modify pkmn effective stat with stage multipliers
 int Pkmn::modStat(int bstat, int statMult) {
+	//formula based on stat multipliers
+	//stat multipliers table from https://bulbapedia.bulbagarden.net/wiki/Statistic#Stage_multipliers
 	int finalStat = bstat * max(2, 2 + statMult)/max(2, 2-statMult);
 	return finalStat;
 }
-		
-//called after modMult() and before modStat()
-//changes multiplier to a number between .33 - 3
-int Pkmn::setAEStat(int mult) {
-	int val = 1;
-	
-	switch (mult) {
-		case -6:
-			val = static_cast<int>(33/100);
-			break;
-		case -5:
-			val = static_cast<int>(36/100);
-			break;
-		case -4:
-			val = static_cast<int>(43/100);
-			break;
-		case -3:
-			val = static_cast<int>(50/100);
-			break;
-		case -2:
-			val = static_cast<int>(60/100);
-			break;
-		case -1:
-			val = static_cast<int>(75/100);
-			break;
-		case 0:
-			break;
-		case 1:
-			val = static_cast<int>(133/100);
-			break;
-		case 2:
-			val = static_cast<int>(166/100);
-			break;
-		case 3:
-			val = static_cast<int>(200/100);
-			break;
-		case 4:
-			val = static_cast<int>(233/100);
-			break;
-		case 5:
-			val = static_cast<int>(266/100);
-			break;
-		case 6:
-			val = static_cast<int>(300/100);
-			break;
-	}
-	
-	return val;
-}
 
+//print info of a single pokemon
 void Pkmn::printPkmnInfo() {
 	cout << name << "\n";
 	cout << "HP: " << HP << " ATK: " << ATK << " DEF: " << DEF << " SATK: " << SATK << " SDEF: " << SDEF << " SPD: " << SPD << "\n";
 }
 
-void Pkmn::printPkmnMoves(Pkmn pkmn) {
+void Pkmn::printPkmnMoves() {
 	printCurlySep();
-	cout << pkmn.name << "'s Moveset:\n";
+	cout << name << "'s Moveset:\n";
 	cout << " [#]  Move\n";
 	for (int i = 0; i < 4; ++i) {
-		cout << " [" << i << "]  " << pkmn.move[i] << "    PP: " << pkmn.movePP[i] << "/" << pkmn.movebasePP[i] << "\n";
+		cout << " [" << i << "]  " << move[i] << "    PP: " << movePP[i] << "/" << movebasePP[i] << "\n";
 	}
 	printCurlySep();
 }
 
 //DEBUG TOOLS: print pkmn info
-void Pkmn::debug(Pkmn pkmn1, Pkmn pkmn2) {
-	cout << "DEBUG INFO:" << endl;
-	cout << pkmn1.name << endl;
-	cout << pkmn1.lvl << endl;
-	cout << pkmn1.HP << endl;
-	cout << pkmn1.baseATK << endl;
-	cout << pkmn1.baseDEF << endl;
-	cout << pkmn1.baseSATK << endl;
-	cout << pkmn1.baseSDEF << endl;
-	cout << pkmn1.baseSPD << endl;
-	cout << pkmn1.HP << endl;
-	cout << pkmn1.ATK << endl;
-	cout << pkmn1.DEF << endl;
-	cout << pkmn1.SATK << endl;
-	cout << pkmn1.SDEF << endl;
-	cout << pkmn1.SPD << endl;
+void Pkmn::debug() {
 	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	cout << pkmn2.name << endl;
-	cout << pkmn2.lvl << endl;
-	cout << pkmn2.HP << endl;
-	cout << pkmn2.baseATK << endl;
-	cout << pkmn2.baseDEF << endl;
-	cout << pkmn2.baseSATK << endl;
-	cout << pkmn2.baseSDEF << endl;
-	cout << pkmn2.baseSPD << endl;
-	cout << pkmn2.HP << endl;
-	cout << pkmn2.ATK << endl;
-	cout << pkmn2.DEF << endl;
-	cout << pkmn2.SATK << endl;
-	cout << pkmn2.SDEF << endl;
-	cout << pkmn2.SPD << endl;
+	cout << "DEBUG INFO:" << endl;
+	cout << name << endl;
+	cout << lvl << endl;
+	cout << HP << endl;
+	cout << baseATK << endl;
+	cout << baseDEF << endl;
+	cout << baseSATK << endl;
+	cout << baseSDEF << endl;
+	cout << baseSPD << endl;
+	cout << HP << endl;
+	cout << ATK << endl;
+	cout << DEF << endl;
+	cout << SATK << endl;
+	cout << SDEF << endl;
+	cout << SPD << endl;
+	printPkmnMoves();
 	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 }
 
@@ -346,29 +292,46 @@ bool checkValidMove(string tmpMove, ifstream& pkmnMoves, string move[4], bool in
 		cout << "\n";
 		return false;
 	}
-	//if move already learned
+	
+	//if move already known
 	else if (find(move, move + 4, tmpMove) != move + 4) {
-		cout << "This Pokemon already knows " << tmpMove << "!\n";
-		cout << "\n";
-		return false;
+		//if choosing moves, invalid if move is already known
+		if (!inBattle) {
+			cout << "This Pokemon already knows " << tmpMove << "!\n";
+			cout << "\n";
+			return false;
+		}
+		//if in battle, valid if move is in moveset
+		else if (inBattle) {
+			return true;
+		}
 	}
 	
+	//if move not known
 	else {
-		returnToBegin(pkmnMoves);
-		string tmpLine;
-		
-		//search pkmnMoves for move
-		while (getline(pkmnMoves, tmpLine, ',')) {	
-	        if (tmpLine == tmpMove) {
-	        	return true;
-	    	}
+		//if choosing moves, find in move list
+		if (!inBattle) {
+			returnToBegin(pkmnMoves);
+			string tmpLine;
+				
+			//search pkmnMoves for move
+			while (getline(pkmnMoves, tmpLine, ',')) {	
+			    if (tmpLine == tmpMove) {
+			    	return true;
+				}
+			}
+				
+			//if move not found in pkmnMoves.txt
+			cout << "Sorry, we couldn't find that! :(\n";
+			cout << "TIPS: Check spelling or see pkmnMoves.txt in folder pkmn-data for valid moves.\n";
+			cout << "\n";
+			return false;
 		}
-		
-		//if move not found in pkmnMoves.txt
-		cout << "Sorry, we couldn't find that! :(\n";
-		cout << "TIPS: Check spelling or see pkmnMoves.txt in folder pkmn-data for valid moves.\n";
-		cout << "\n";
-		return false;
+		//if in battle, invalid if not known
+		else if (inBattle) {
+			cout << "Please input a known move.\n";
+			return false;
+		}
 	}
 }
 
@@ -378,7 +341,7 @@ string getValidMove(string name, ifstream& pkmnMoves, string move[4], bool inBat
 	bool validMove = false;
 	
 	while (!validMove) {
-		cout << "Please input any valid move for " << name << ".\n";
+		if (!inBattle) cout << "Please input any valid move for " << name << ".\n";
 		cout << "YOU: ";
 		getline (cin, tmpMove);
 		cout << "\n";
@@ -386,6 +349,103 @@ string getValidMove(string name, ifstream& pkmnMoves, string move[4], bool inBat
 		validMove = checkValidMove(tmpMove, pkmnMoves, move, inBattle);
 	}
 	
-	cout << name << " learned " << tmpMove << "!\n";
+	if (!inBattle) cout << name << " learned " << tmpMove << "!\n";
 	return tmpMove;
 }
+
+//prints both pokemon stats
+void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
+	cout << "\n";
+	printShortSep();
+	pkmn1.printPkmnInfo();
+	printShortSep();
+	pkmn2.printPkmnInfo();
+	printShortSep();
+	cout << "\n";
+}
+
+//changes pkmn stats based on move
+//pkmn1 - attacker, pkmn2 - receiver
+void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
+	string cat = pkmn1.moveCat[ind];
+	/*
+	Columns for pkmnMoves.txt:
+
+	PHYSICAL, SPECIAL, SAME Moves:
+	Index, Move, Type, Category, PP, Power, Accuracy
+	
+	Stat-changing Moves (ATKO, DEFO, ACCO, SATKO, SDEFO, SPDO, ACCO, EVAO, ATKS, DEFS, ACCS, SATKS, SDEFS, SPDS, ACCS, EVAS):
+	Index, Move, Type, Category, PP, Stage Multiplier, Accuracy
+	
+	//!!!CHECK EVA STAT MODIFIERS: SHOULD BE OPPOSITE ACC
+	*/
+	if (cat == "PHYSICAL")		{pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);}
+	else if (cat == "SPECIAL")	{pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.SATK, pkmn2.SDEF);}
+	else { //Status Moves
+	
+		//change stat of other pokemon
+		if (cat == "ATKO")		{pkmn2.ATKmult = pkmn2.modMult(pkmn2.ATKmult, pkmn1.movePWR[ind]);	pkmn2.ATK = pkmn2.modStat(pkmn2.baseATK, pkmn2.ATKmult);}
+		else if (cat == "DEFO")	{pkmn2.DEFmult = pkmn2.modMult(pkmn2.DEFmult, pkmn1.movePWR[ind]);	pkmn2.DEF = pkmn2.modStat(pkmn2.baseDEF, pkmn2.DEFmult);}
+		else if (cat == "SATKO"){pkmn2.SATKmult = pkmn2.modMult(pkmn2.SATKmult, pkmn1.movePWR[ind]);pkmn2.SATK = pkmn2.modStat(pkmn2.baseSATK, pkmn2.SATKmult);}
+		else if (cat == "SDEFO"){pkmn2.SDEFmult = pkmn2.modMult(pkmn2.SDEFmult, pkmn1.movePWR[ind]);pkmn2.SDEF = pkmn2.modStat(pkmn2.baseSDEF, pkmn2.SDEFmult);}
+		else if (cat == "SPDO")	{pkmn2.SPDmult = pkmn2.modMult(pkmn2.SPDmult, pkmn1.movePWR[ind]); 	pkmn2.SPD = pkmn2.modStat(pkmn2.baseSPD, pkmn2.SPDmult);}
+		else if (cat == "ACCO")	{pkmn2.ACCmult = pkmn2.modMult(pkmn2.ACCmult, pkmn1.movePWR[ind]);	pkmn2.ACC = pkmn2.modStat(pkmn2.ACC, pkmn2.ACCmult);}
+		else if (cat == "EVAO")	{pkmn2.EVAmult = pkmn2.modMult(pkmn2.EVAmult, pkmn1.movePWR[ind]);	pkmn2.EVA = pkmn2.modStat(pkmn2.EVA, pkmn2.EVAmult);}
+		
+		//change stat of self
+		else if (cat == "ATKS")	{pkmn1.ATKmult = pkmn1.modMult(pkmn1.ATKmult, pkmn1.movePWR[ind]); 	pkmn1.ATK = pkmn1.modStat(pkmn1.baseATK, pkmn1.ATKmult);}
+		else if (cat == "DEFS")	{pkmn1.DEFmult = pkmn1.modMult(pkmn1.DEFmult, pkmn1.movePWR[ind]); 	pkmn1.DEF = pkmn1.modStat(pkmn1.baseDEF, pkmn1.DEFmult);}
+		else if (cat == "SATKS"){pkmn1.SATKmult = pkmn1.modMult(pkmn1.SATKmult, pkmn1.movePWR[ind]);pkmn1.SATK = pkmn1.modStat(pkmn1.baseSATK, pkmn1.SATKmult);}
+		else if (cat == "SDEFS"){pkmn1.SDEFmult = pkmn1.modMult(pkmn1.SDEFmult, pkmn1.movePWR[ind]);pkmn1.SDEF = pkmn1.modStat(pkmn1.baseSDEF, pkmn1.SDEFmult);}
+		else if (cat == "SPDS")	{pkmn1.SPDmult = pkmn1.modMult(pkmn1.SPDmult, pkmn1.movePWR[ind]);	pkmn1.SPD = pkmn1.modStat(pkmn1.baseSPD, pkmn1.SPDmult);}
+		else if (cat == "ACCS")	{pkmn1.ACCmult = pkmn1.modMult(pkmn1.ACCmult, pkmn1.movePWR[ind]);	pkmn1.ACC = pkmn1.modStat(pkmn1.ACC, pkmn1.ACCmult);}
+		else if (cat == "EVAS")	{pkmn1.EVAmult = pkmn1.modMult(pkmn1.EVAmult, pkmn1.movePWR[ind]);	pkmn1.EVA = pkmn1.modStat(pkmn1.EVA, pkmn1.EVAmult);}
+		
+		//instantly ends battle
+		else if (cat == "OHKO") {pkmn2.HP = 0;}
+		else if (cat == "FLEE")	{inBattle = false;} //add battle end message here
+		
+		//moves whose damage is always constant
+		else if (cat == "SAME")	{pkmn2.HP -= pkmn1.movePWR[ind]; if(pkmn1.movePWR[ind] == 0) {cout << "But nothing happened!\n";}}
+		
+		//moves that hit multiple times
+		/*
+		else if (cat=="PREPR"){
+			int k=(rand() % pkmn1.moveRep2[ind] + pkmn1.moveRep1[ind]);
+			for(int j=0; j<k; ++j) {
+				pkmn2.HP-=pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);
+			}
+			cout << pkmn1.move[ind] << " hit " << k << " times!" << endl;
+		}
+		
+		else if (cat == "PREP"){
+			for(int j=0; j<pkmn1.moveRep1[ind]; ++j) {
+				pkmn2.HP-=pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);
+			}
+			cout << pkmn1.move[ind] << " hit " << pkmn1.moveRep1[ind] << " times!" << endl;
+		}
+		*/
+	}
+}
+
+bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle) {
+	if (pkmn1.HP <= 0) { 
+		cout << pkmn1.name << " fainted!\n";
+		return false;
+	}
+	else if (pkmn2.HP <= 0) { 
+		cout << "The wild " << pkmn2.name << " fainted!\n";
+		return false;
+	}
+	return inBattle;
+}
+
+/*
+void wait() {
+	//using namespace std::this_thread; // sleep_for, sleep_until
+    //using namespace std::chrono; // nanoseconds, system_clock, seconds
+
+    this_thread::sleep_for(chrono::nanoseconds(10));
+    this_thread::sleep_until(chrono::system_clock::now() + chrono::seconds(1));
+}
+*/

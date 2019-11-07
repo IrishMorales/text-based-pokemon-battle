@@ -1,37 +1,20 @@
 To be implemented: (According to importance)
+-Randomize
 -Special moves (ALL)
 -Types
 -Status Effects
 -Damage Modifiers
 -Pokemon names
 -ASCII art title
--print pkmn & move stats after choosing
--confirm pkmn/move
--add baseHP
-
-Added in v3: 
--SPD determines first to attack
--Stats can not be lowered to 0
--Removed base stat objects
--Optimized setAllStats into constructors
--Optimized adding moves into setMove function
--Prints movesets, uses indices as input
-
-Added in v4:
--MAJOR: Pokemon selection and stats based on .txt files
--MAJOR: Move selection and stats based on .txt files
--Added cat OHKO, FLEE, SAME
-
-Added in v5:
--v5.1: changed var moveType to moveCat
--v5.1: Accepts all move info
--v5.2: implemented movePP mechanic for pkmn1
--v5.3: Implemented moveACC mechanic for pkmn1
--v5.4: Added cat ACC, EVA
--v5.4: Added ACC & EVA mechanic
-
-Added in v6:
--Added cat PREP, PREPR
+-Confirm pkmn/move
+-Add baseHP
+-Decrease PP
+-Add randMove check for pkmn2: use diff. move if chosen has 0 PP
+-Add cat PREP, PREPR
+-Time delay between rounds
+-Remove trailing spaces in input
+-Print "(WILD)" and lvl in printBothPkmnInfo();
+-Stat change messages
 
 11/04/2019 Update:
 -Refactored code

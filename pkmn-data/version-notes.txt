@@ -1,0 +1,23 @@
+To be implemented: (According to importance)
+-Randomize
+-Special moves (ALL)
+-Types
+-Status Effects
+-Damage Modifiers
+-Pokemon names
+-ASCII art title
+-Confirm pkmn/move
+-Add baseHP
+-Decrease PP
+-Add randMove check for pkmn2: use diff. move if chosen has 0 PP
+-Add cat PREP, PREPR
+-Time delay between rounds
+-Remove trailing spaces in input
+-Print "(WILD)" and lvl in printBothPkmnInfo();
+-Stat change messages
+
+11/04/2019 Update:
+-Refactored code
+-Added error catching for lvl
+-Changed output messages
+-Moves can now only be learned once

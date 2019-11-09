@@ -107,13 +107,6 @@ bool Pkmn::checkValidMove(string tmpMove, ifstream& pkmnMoves, bool inBattle) {
 		//if in battle, valid if move is in moveset & PP > 0
 		else if (inBattle) {
 			return true;
-			//PP check here
-			/*
-			if (movePP[distance(move, moveIt)] > 0) {return true;}
-			else {
-				return false;
-			}
-			*/
 		}
 	}
 	
@@ -456,12 +449,47 @@ void wait() {
 }
 */
 
+bool struggleCheck(Pkmn pkmn) {
+	if (all_of(pkmn.movePP,pkmn.movePP + 4, [](int currMovePP){return currMovePP == 0;})) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Pkmn::PPCheck(int moveIndex) {
+	if (movePP[moveIndex] > 0) {
+		--movePP[moveIndex];
+		return true;
+	}
+	else {
+		cout << name << " tries to use " << move[moveIndex] << "...\n";
+		cout << "...But " << move[moveIndex] << " is out of PP!\n";
+		return false;
+	}
+}
+
 void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, ifstream& pkmnMoves) {
 	pkmn1.printPkmnMoves();
-	cout << "What will " << pkmn1.name << " do?\n";
-	int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, pkmn1.getValidMove(pkmnMoves, true)));
-	cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";
-	moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
+	
+	//if any move still has PP, prompt for move
+	if (!struggleCheck(pkmn1)) {
+		cout << "What should " << pkmn1.name << " do?\n";
+	
+		int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, pkmn1.getValidMove(pkmnMoves, true)));
+		
+		if (pkmn1.PPCheck(moveIndex)) {cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";}
+		moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
+	}
+	//if no PP, struggle
+	else {
+		cout << pkmn1.name << " has no moves left!" << endl;
+		cout << pkmn1.name << " used Struggle!" << endl;
+		pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, 50, pkmn1.ATK, pkmn2.DEF);
+		cout << pkmn1.name << " is hit with recoil!" << endl;
+		pkmn1.HP -= (pkmn1.dmg(pkmn1.lvl, 50, pkmn1.ATK, pkmn2.DEF))/2;
+	}
 }
 
 void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {

@@ -19,6 +19,7 @@ class Pkmn {
 		//pkmn moveset and info
 		std::string move[4];
 		std::string moveCat[4];
+		int movePP[4];
 		
 		//get pkmn names
 		bool checkValidName(std::string tmpName, std::ifstream& pkmnList);
@@ -42,6 +43,8 @@ class Pkmn {
 		void printPkmnInfo();
 		void printPkmnMoves();
 		void debug();
+		bool PPCheck(int moveIndex);
+		
 		friend void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle);
 		friend void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves);
 		friend void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle);
@@ -54,7 +57,6 @@ class Pkmn {
 		
 		//pkmn moveset and info
 		std::string moveType[4];
-		int movePP[4];
 		int movebasePP[4];
 		int movePWR[4];
 		int moveACC[4];
@@ -99,5 +101,5 @@ void returnToBegin(std::ifstream& file);
 
 //in-battle functions
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2);
-//void moveEffect(Pkmn pkmn1, Pkmn pkmn2, int moveIndex);
 bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
+bool struggleCheck(Pkmn pkmn);

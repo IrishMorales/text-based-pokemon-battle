@@ -64,24 +64,7 @@ int main() {
 	cout << "The battle has ended!\n";
 	//try again function here
 }
-	/*
-			if(pkmn1.movePP[ind]>0){ //checks if move still has PP
-				cout << endl << pkmn1.name << " used " << pkmn1.move[ind] << "!" << endl;
-				--pkmn1.movePP[ind];
-			}
-			else if(pkmn1.movePP[0]==0 && pkmn1.movePP[1]==0 && pkmn1.movePP[2]==0 && pkmn1.movePP[3]==0){ //checks if all moves are out of PP
-				cout << pkmn1.name << " has no moves left!" << endl;
-				cout << pkmn1.name << " used Struggle!" << endl;
-				pkmn2.HP-=pkmn1.dmg(pkmn1.lvl, 50, pkmn1.ATK, pkmn2.DEF);
-				cout << pkmn1.name << " is hit with recoil!" << endl;
-				pkmn1.HP-=(pkmn1.dmg(pkmn1.lvl, 50, pkmn1.ATK, pkmn2.DEF))/2;
-			}
-			else{
-				cout << pkmn1.name << " tries to use " << pkmn1.move[ind] << "..." << endl;
-				cout << "...But " << pkmn1.move[ind] << "is out of PP!" << endl;
-				goto PKMN2F1;
-			}
-			
+	/*			
 			//accuracy check
 			if (rand() % 100 + 1 > (pkmn1.moveACC[ind]*(pkmn1.ACC/pkmn2.EVA))){
 				cout << pkmn1.name << " missed!" << endl;

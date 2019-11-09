@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <iostream>
-#include <ctime>
 #include "pkmn.h"
 using namespace std;
 
@@ -25,57 +24,45 @@ int main() {
 	cout << "Go! " << pkmn1.name << "!\n";
 	
 	bool inBattle = true;
-	int randMoveIndex;
 	
 	while (inBattle) {
 		printBothPkmnInfo(pkmn1, pkmn2);
 		
-		//set randMoveIndex
-		srand(time(0));
-		randMoveIndex = rand() % 4;
-		
 		//pkmn w higher speed goes first
 		if (pkmn1.SPD > pkmn2.SPD) {
-			
-			pkmn1.printPkmnMoves();
-			cout << "What will " << pkmn1.name << " do?\n";
-			int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, getValidMove(pkmn1.name, pkmnMoves, pkmn1.move, true)));
-			cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";
-			moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
+			pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
 			
 			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 			if (!inBattle) {break;}
+			
 			//wait();
 			
 			printBothPkmnInfo(pkmn1, pkmn2);
-			
-			cout << "The wild " << pkmn2.name << " used " << pkmn2.move[randMoveIndex] << "!\n";
-			moveEffect(pkmn2, pkmn1, randMoveIndex, inBattle);
+			pkmn2Move(pkmn2, pkmn1, inBattle);
 		}
 		
 		else {
-			cout << "The wild " << pkmn2.name << " used " << pkmn2.move[randMoveIndex] << "!\n";
-			moveEffect(pkmn2, pkmn1, randMoveIndex, inBattle);
+			pkmn2Move(pkmn2, pkmn1, inBattle);
 			
 			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 			if (!inBattle) {break;}
+			
 			//wait();
 			
 			printBothPkmnInfo(pkmn1, pkmn2);
-			
-			pkmn1.printPkmnMoves();
-			cout << "What will " << pkmn1.name << " do?\n";
-			int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, getValidMove(pkmn1.name, pkmnMoves, pkmn1.move, true)));
-			cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";
-			moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
+			pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
 		}
 		printLongSep();
 		
 		inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 		if (!inBattle) {break;}
+		
 		//wait();
 	}
+	printLongSep();
+	cout << "\n";
 	cout << "The battle has ended!\n";
+	//try again function here
 }
 	/*
 			if(pkmn1.movePP[ind]>0){ //checks if move still has PP

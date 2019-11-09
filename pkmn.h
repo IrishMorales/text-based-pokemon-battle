@@ -20,9 +20,21 @@ class Pkmn {
 		std::string move[4];
 		std::string moveCat[4];
 		
+		//get pkmn names
+		bool checkValidName(std::string tmpName, std::ifstream& pkmnList);
+		std::string getValidName(std::ifstream& pkmnList);
+		
+		//get pkmn lvls
+		bool checkValidLvl(std::string tmpLvl);
+		int getValidLvl();
+		
+		//get pkmn moves
+		bool checkValidMove(std::string tmpMove, std::ifstream& pkmnMoves, bool inBattle);
+		std::string getValidMove(std::ifstream& pkmnMoves, bool inBattle);
+		
 		//pkmn functions
-		int setHP(int lvl, std::ifstream& pkmnList);
-		int setStat(int lvl, std::ifstream& pkmnList);
+		int setHP(std::ifstream& pkmnList);
+		int setStat(std::ifstream& pkmnList);
 		int dmg(int lvl, int movePWR, int ATK1, int DEF2);
 		int modMult(int statMult, int moveMult);
 		int modStat(int bstat, int statMult);
@@ -31,6 +43,9 @@ class Pkmn {
 		void printPkmnMoves();
 		void debug();
 		friend void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle);
+		friend void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves);
+		friend void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle);
+
 		
 	private:
 		//pkmn type
@@ -82,20 +97,7 @@ void checkData(std::ifstream& pkmnList, std::ifstream& pkmnMoves);
 std::string getNext(std::ifstream& file);
 void returnToBegin(std::ifstream& file);
 
-//get pkmn names
-bool checkValidName(std::string tmpName, std::ifstream& pkmnList);
-std::string getValidName(std::ifstream& pkmnList);
-
-//get pkmn lvls
-bool checkValidLvl(std::string tmpLvl);
-int getValidLvl(std::string name);
-
-//get pkmn moves
-bool checkValidMove(std::string tmpMove, std::ifstream& pkmnMoves, std::string move[4], bool inBattle);
-std::string getValidMove(std::string name, std::ifstream& pkmnMoves, std::string move[4], bool inBattle);
-
 //in-battle functions
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2);
-void moveEffect(Pkmn pkmn1, Pkmn pkmn2, int moveIndex);
+//void moveEffect(Pkmn pkmn1, Pkmn pkmn2, int moveIndex);
 bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
-//void wait();

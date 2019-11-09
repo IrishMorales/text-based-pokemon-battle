@@ -1,12 +1,170 @@
 #include <iostream>
 #include <algorithm>
 #include <chrono>
-#include <thread>
+#include <ctime>
 #include "pkmn.h"
 using namespace std;
 
+//check if name is valid
+bool Pkmn::checkValidName(string tmpName, ifstream& pkmnList) {
+	//if name not all alphabetical char
+	if (tmpName.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
+		cout << "That's one weird Pokemon. Try again?\n";
+		cout << "\n";
+		return false;
+	}
+	
+	else {
+		returnToBegin(pkmnList);
+		string tmpLine;
+		
+		//search message
+		cout << "Finding a wild " << tmpName << "...\n";
+		
+		//search pkmnList for name
+		while (getline(pkmnList, tmpLine, ',')) {	
+	        if (tmpLine == tmpName) {
+	        	return true;
+	    	}
+		}
+		
+		//if name not found in pkmnList.txt
+		cout << "Looks like " << tmpName << " isn't a Pokemon. :(\n";
+		cout << "TIPS: Check spelling or see pkmnList.txt in folder pkmn-data for valid Pokemon.\n";
+		cout << "\n";
+		return false;
+	}
+}
+
+//prompt user for valid name
+string Pkmn::getValidName(ifstream& pkmnList) {
+	string tmpName;
+	bool validName = false;
+	
+	while (!validName) {
+		cout << "Please input a Pokemon.\n";
+		cout << "YOU: ";
+		getline (cin, tmpName);
+		cout << "\n";
+		tmpName = capitalize(tmpName);
+		validName = checkValidName(tmpName, pkmnList);
+	}
+	
+	cout << "Found " << tmpName << "!\n";
+	return tmpName;
+}
+
+//check if lvl is valid
+bool Pkmn::checkValidLvl(string tmpLvl) {
+	//lvl must be within 1-100
+	if (tmpLvl.find_first_not_of("1234567890") != std::string::npos || !(stoi(tmpLvl) > 0 && stoi(tmpLvl) < 101)) {
+		cout << "Level '" << tmpLvl << "' doesn't seem right.\n";
+		cout << "\n";
+		return false;
+	}
+	
+	return true;
+}
+
+//prompt user for valid lvl
+int Pkmn::getValidLvl() {
+	string tmpLvl;
+	bool validLvl = false;
+	
+	cout << "What level will " << name << " be?\n";
+	
+	while (!validLvl) {
+		cout << "Please input a level within 1-100.\n";
+		cout << "YOU: ";
+		getline (cin, tmpLvl);
+		cout << "\n";
+		validLvl = checkValidLvl(tmpLvl);
+	}
+	
+	cout << "Level " << stoi(tmpLvl) << " set!\n";
+	return stoi(tmpLvl);
+}
+
+//check if move is valid
+bool Pkmn::checkValidMove(string tmpMove, ifstream& pkmnMoves, bool inBattle) {
+	string* moveIt = find(move, move + 4, tmpMove);
+	
+	//if move not all alphabetical char
+	if (tmpMove.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ '-") != std::string::npos) {
+		cout << "Hey there! You probably used some weird number or punctuation. Try again?\n";
+		cout << "\n";
+		return false;
+	}
+	
+	//if move already known
+	else if (moveIt != move + 4) {
+		//if choosing moves, invalid if move is already known
+		if (!inBattle) {
+			cout << "This Pokemon already knows " << tmpMove << "!\n";
+			cout << "\n";
+			return false;
+		}
+		//if in battle, valid if move is in moveset & PP > 0
+		else if (inBattle) {
+			return true;
+			//PP check here
+			/*
+			if (movePP[distance(move, moveIt)] > 0) {return true;}
+			else {
+				return false;
+			}
+			*/
+		}
+	}
+	
+	//if move not known
+	else {
+		//if choosing moves, find in move list
+		if (!inBattle) {
+			returnToBegin(pkmnMoves);
+			string tmpLine;
+				
+			//search pkmnMoves for move
+			while (getline(pkmnMoves, tmpLine, ',')) {	
+			    if (tmpLine == tmpMove) {
+			    	return true;
+				}
+			}
+				
+			//if move not found in pkmnMoves.txt
+			cout << "Sorry, we couldn't find that! :(\n";
+			cout << "TIPS: Check spelling or see pkmnMoves.txt in folder pkmn-data for valid moves.\n";
+			cout << "\n";
+			return false;
+		}
+		//if in battle, invalid if not known
+		else if (inBattle) {
+			cout << "Please input a known move.\n";
+			return false;
+		}
+	}
+}
+
+//prompt user for valid move
+string Pkmn::getValidMove(ifstream& pkmnMoves, bool inBattle) {
+	string tmpMove;
+	bool validMove = false;
+	
+	while (!validMove) {
+		if (!inBattle) cout << "Please input any valid move for " << name << ".\n";
+		cout << "YOU: ";
+		getline (cin, tmpMove);
+		cout << "\n";
+		tmpMove = capitalize(tmpMove);
+		validMove = checkValidMove(tmpMove, pkmnMoves, inBattle);
+	}
+	
+	if (!inBattle) cout << name << " learned " << tmpMove << "!\n";
+	return tmpMove;
+}
+
 //compute HP with base HP and lvl
-int Pkmn::setHP(int lvl, ifstream& pkmnList) {
+int Pkmn::setHP(ifstream& pkmnList) {
 	string tmpLine;
 	getline (pkmnList, tmpLine, ',');
 	
@@ -17,7 +175,7 @@ int Pkmn::setHP(int lvl, ifstream& pkmnList) {
 }
 		
 //compute stat with base stat and lvl
-int Pkmn::setStat(int lvl, ifstream& pkmnList) {
+int Pkmn::setStat(ifstream& pkmnList) {
 	string tmpLine;
 	getline (pkmnList, tmpLine, ',');
 	
@@ -97,21 +255,21 @@ Pkmn::Pkmn(ifstream& pkmnList, ifstream& pkmnMoves) {
 	printShortSep();
 	name = getValidName(pkmnList);
 	printShortSep();
-	lvl = getValidLvl(name);
+	lvl = getValidLvl();
 	
 	type1 = getNext(pkmnList);
 	type2 = getNext(pkmnList);
 	
-	HP = setHP (lvl, pkmnList);
-	ATK = setStat (lvl, pkmnList);
+	HP = setHP(pkmnList);
+	ATK = setStat(pkmnList);
 	baseATK = ATK;
-	DEF = setStat (lvl, pkmnList);
+	DEF = setStat(pkmnList);
 	baseDEF = DEF;
-	SATK = setStat (lvl, pkmnList);
+	SATK = setStat(pkmnList);
 	baseSATK = SATK;
-	SDEF = setStat (lvl, pkmnList);
+	SDEF = setStat(pkmnList);
 	baseSDEF = SDEF;
-	SPD = setStat (lvl, pkmnList);
+	SPD = setStat(pkmnList);
 	baseSPD = SPD;
 	
 	pkmnList.close();
@@ -121,7 +279,7 @@ Pkmn::Pkmn(ifstream& pkmnList, ifstream& pkmnMoves) {
     
 	for (int i = 0; i < 4; ++i) {
 		printShortSep();
-		move[i] = getValidMove(name, pkmnMoves, move, false);
+		move[i] = getValidMove(pkmnMoves, false);
 	    moveType[i] = getNext(pkmnMoves);
 	    moveCat[i] = getNext(pkmnMoves);
 		movebasePP[i] = stoi(getNext(pkmnMoves));
@@ -202,155 +360,6 @@ string getNext(ifstream& file) {
 void returnToBegin(ifstream& file) {
 	file.clear();
 	file.seekg(0, ios::beg);
-}
-
-//check if name is valid
-bool checkValidName(string tmpName, ifstream& pkmnList) {
-	//if name not all alphabetical char
-	if (tmpName.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		cout << "That's one weird Pokemon. Try again?\n";
-		cout << "\n";
-		return false;
-	}
-	
-	else {
-		returnToBegin(pkmnList);
-		string tmpLine;
-		
-		//search message
-		cout << "Finding a wild " << tmpName << "...\n";
-		
-		//search pkmnList for name
-		while (getline(pkmnList, tmpLine, ',')) {	
-	        if (tmpLine == tmpName) {
-	        	return true;
-	    	}
-		}
-		
-		//if name not found in pkmnList.txt
-		cout << "Looks like " << tmpName << " isn't a Pokemon. :(\n";
-		cout << "TIPS: Check spelling or see pkmnList.txt in folder pkmn-data for valid Pokemon.\n";
-		cout << "\n";
-		return false;
-	}
-}
-
-//prompt user for valid name
-string getValidName(ifstream& pkmnList) {
-	string tmpName;
-	bool validName = false;
-	
-	while (!validName) {
-		cout << "Please input a Pokemon.\n";
-		cout << "YOU: ";
-		getline (cin, tmpName);
-		cout << "\n";
-		tmpName = capitalize(tmpName);
-		validName = checkValidName(tmpName, pkmnList);
-	}
-	
-	cout << "Found " << tmpName << "!\n";
-	return tmpName;
-}
-
-//check if lvl is valid
-bool checkValidLvl(string tmpLvl) {
-	//lvl must be within 1-100
-	if (tmpLvl.find_first_not_of("1234567890") != std::string::npos || !(stoi(tmpLvl) > 0 && stoi(tmpLvl) < 101)) {
-		cout << "Level '" << tmpLvl << "' doesn't seem right.\n";
-		cout << "\n";
-		return false;
-	}
-	
-	return true;
-}
-
-//prompt user for valid lvl
-int getValidLvl(string name) {
-	string tmpLvl;
-	bool validLvl = false;
-	
-	cout << "What level will " << name << " be?\n";
-	
-	while (!validLvl) {
-		cout << "Please input a level within 1-100.\n";
-		cout << "YOU: ";
-		getline (cin, tmpLvl);
-		cout << "\n";
-		validLvl = checkValidLvl(tmpLvl);
-	}
-	
-	cout << "Level " << stoi(tmpLvl) << " set!\n";
-	return stoi(tmpLvl);
-}
-
-//check if move is valid
-bool checkValidMove(string tmpMove, ifstream& pkmnMoves, string move[4], bool inBattle) {
-	//if move not all alphabetical char
-	if (tmpMove.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ '-") != std::string::npos) {
-		cout << "Hey there! You probably used some weird number or punctuation. Try again?\n";
-		cout << "\n";
-		return false;
-	}
-	
-	//if move already known
-	else if (find(move, move + 4, tmpMove) != move + 4) {
-		//if choosing moves, invalid if move is already known
-		if (!inBattle) {
-			cout << "This Pokemon already knows " << tmpMove << "!\n";
-			cout << "\n";
-			return false;
-		}
-		//if in battle, valid if move is in moveset
-		else if (inBattle) {
-			return true;
-		}
-	}
-	
-	//if move not known
-	else {
-		//if choosing moves, find in move list
-		if (!inBattle) {
-			returnToBegin(pkmnMoves);
-			string tmpLine;
-				
-			//search pkmnMoves for move
-			while (getline(pkmnMoves, tmpLine, ',')) {	
-			    if (tmpLine == tmpMove) {
-			    	return true;
-				}
-			}
-				
-			//if move not found in pkmnMoves.txt
-			cout << "Sorry, we couldn't find that! :(\n";
-			cout << "TIPS: Check spelling or see pkmnMoves.txt in folder pkmn-data for valid moves.\n";
-			cout << "\n";
-			return false;
-		}
-		//if in battle, invalid if not known
-		else if (inBattle) {
-			cout << "Please input a known move.\n";
-			return false;
-		}
-	}
-}
-
-//prompt user for valid move
-string getValidMove(string name, ifstream& pkmnMoves, string move[4], bool inBattle) {
-	string tmpMove;
-	bool validMove = false;
-	
-	while (!validMove) {
-		if (!inBattle) cout << "Please input any valid move for " << name << ".\n";
-		cout << "YOU: ";
-		getline (cin, tmpMove);
-		cout << "\n";
-		tmpMove = capitalize(tmpMove);
-		validMove = checkValidMove(tmpMove, pkmnMoves, move, inBattle);
-	}
-	
-	if (!inBattle) cout << name << " learned " << tmpMove << "!\n";
-	return tmpMove;
 }
 
 //prints both pokemon stats
@@ -440,12 +449,26 @@ bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle) {
 	return inBattle;
 }
 
-/*
+/* 
+//MinGW does not currently support threading
 void wait() {
-	//using namespace std::this_thread; // sleep_for, sleep_until
-    //using namespace std::chrono; // nanoseconds, system_clock, seconds
-
-    this_thread::sleep_for(chrono::nanoseconds(10));
-    this_thread::sleep_until(chrono::system_clock::now() + chrono::seconds(1));
+    this_thread::sleep_for(std::chrono::milliseconds(5));
 }
 */
+
+void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, ifstream& pkmnMoves) {
+	pkmn1.printPkmnMoves();
+	cout << "What will " << pkmn1.name << " do?\n";
+	int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, pkmn1.getValidMove(pkmnMoves, true)));
+	cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";
+	moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
+}
+
+void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
+	//get index for random move
+	srand(time(0));
+	int randMoveIndex = rand() % 4;
+		
+	cout << "The wild " << pkmn2.name << " used " << pkmn2.move[randMoveIndex] << "!\n";
+	moveEffect(pkmn2, pkmn1, randMoveIndex, inBattle);
+}

@@ -6,9 +6,9 @@ tACkle
 king's shield
 charizard
 80
-double slap
-sPlash
-power-up punch
+ember
+scratch
+tackle
 smog
 tackle
 tackle

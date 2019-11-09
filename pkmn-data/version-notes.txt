@@ -9,9 +9,7 @@ To be implemented: (According to importance)
 -Add baseHP
 -Add randMove check for pkmn2: use diff. move if chosen has 0 PP
 -Add cat PREP, PREPR
--Time delay between rounds
 -Remove trailing spaces in input
--Print "(WILD)" and lvl in printBothPkmnInfo();
 -Stat change messages
 
 11/04/2019 Update:

@@ -466,6 +466,15 @@ bool Pkmn::PPCheck(int moveIndex) {
 	}
 }
 
+void Pkmn::struggle(Pkmn& oppPkmn) {
+	cout << name << " has no moves left!\n";
+	cout << name << " used Struggle!\n";
+	int struggleDmg = dmg(lvl, 50, ATK, oppPkmn.DEF);
+	oppPkmn.HP -= struggleDmg;
+	cout << name << " is hit with recoil!\n";
+	HP -= struggleDmg/2;
+}
+
 void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, ifstream& pkmnMoves) {
 	pkmn1.printPkmnMoves();
 	
@@ -480,19 +489,24 @@ void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, ifstream& pkmnMoves) {
 	}
 	//if no PP, struggle
 	else {
-		cout << pkmn1.name << " has no moves left!" << endl;
-		cout << pkmn1.name << " used Struggle!" << endl;
-		pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, 50, pkmn1.ATK, pkmn2.DEF);
-		cout << pkmn1.name << " is hit with recoil!" << endl;
-		pkmn1.HP -= (pkmn1.dmg(pkmn1.lvl, 50, pkmn1.ATK, pkmn2.DEF))/2;
+		pkmn1.struggle(pkmn2);
 	}
 }
 
 void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
-	//get index for random move
-	srand(time(0));
-	int randMoveIndex = rand() % 4;
+	
+	//if any move still has PP, prompt for move
+	if (!struggleCheck(pkmn2)) {
 		
-	cout << "The wild " << pkmn2.name << " used " << pkmn2.move[randMoveIndex] << "!\n";
-	moveEffect(pkmn2, pkmn1, randMoveIndex, inBattle);
+		//get index for random move
+		srand(time(0));
+		int moveIndex = rand() % 4;	
+		
+		if (pkmn2.PPCheck(moveIndex)) {cout << "The wild " << pkmn2.name << " used " << pkmn2.move[moveIndex] << "!\n";}
+		moveEffect(pkmn2, pkmn1, moveIndex, inBattle);
+	}
+	//if no PP, struggle
+	else {
+		pkmn2.struggle(pkmn1);
+	}
 }

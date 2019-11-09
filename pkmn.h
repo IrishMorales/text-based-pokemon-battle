@@ -36,13 +36,16 @@ class Pkmn {
 		//pkmn functions
 		int setHP(std::ifstream& pkmnList);
 		int setStat(std::ifstream& pkmnList);
+		
 		int dmg(int lvl, int movePWR, int ATK1, int DEF2);
 		int modMult(int statMult, int moveMult);
 		int modStat(int bstat, int statMult);
-		int setAEStat(int mult);
+		
 		void printPkmnMoves();
 		void debug();
+		
 		bool PPCheck(int moveIndex);
+		void struggle(Pkmn& oppPkmn);
 		
 		friend void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle);
 		friend void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves);

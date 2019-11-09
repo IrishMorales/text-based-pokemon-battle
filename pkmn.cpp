@@ -203,12 +203,6 @@ int Pkmn::modStat(int bstat, int statMult) {
 	return finalStat;
 }
 
-//print info of a single pokemon
-void Pkmn::printPkmnInfo() {
-	cout << name << "\n";
-	cout << "HP: " << HP << " ATK: " << ATK << " DEF: " << DEF << " SATK: " << SATK << " SDEF: " << SDEF << " SPD: " << SPD << "\n";
-}
-
 void Pkmn::printPkmnMoves() {
 	printCurlySep();
 	cout << name << "'s Moveset:\n";
@@ -359,9 +353,11 @@ void returnToBegin(ifstream& file) {
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
 	cout << "\n";
 	printShortSep();
-	pkmn1.printPkmnInfo();
+	cout << pkmn1.name << " / LVL " << pkmn1.lvl << "\n";
+	cout << "HP: " << pkmn1.HP << " / ATK: " << pkmn1.ATK << " / DEF: " << pkmn1.DEF << " / SATK: " << pkmn1.SATK << " / SDEF: " << pkmn1.SDEF << " / SPD: " << pkmn1.SPD << "\n";
 	printShortSep();
-	pkmn2.printPkmnInfo();
+	cout << pkmn2.name << " / LVL " << pkmn2.lvl << " (WILD)\n";
+	cout << "HP: " << pkmn2.HP << " / ATK: " << pkmn2.ATK << " / DEF: " << pkmn2.DEF << " / SATK: " << pkmn2.SATK << " / SDEF: " << pkmn2.SDEF << " / SPD: " << pkmn2.SPD << "\n";
 	printShortSep();
 	cout << "\n";
 }

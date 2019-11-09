@@ -40,7 +40,6 @@ class Pkmn {
 		int modMult(int statMult, int moveMult);
 		int modStat(int bstat, int statMult);
 		int setAEStat(int mult);
-		void printPkmnInfo();
 		void printPkmnMoves();
 		void debug();
 		bool PPCheck(int moveIndex);

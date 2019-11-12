@@ -37,20 +37,24 @@ class Pkmn {
 		int setHP(std::ifstream& pkmnList);
 		int setStat(std::ifstream& pkmnList);
 		
+		//in-battle functions
 		int dmg(int lvl, int movePWR, int ATK1, int DEF2);
 		int modMult(int statMult, int moveMult);
 		int modStat(int bstat, int statMult);
 		
+		//print functions
+		friend void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2);
 		void printPkmnMoves();
 		void debug();
 		
+		//PPCheck functions
 		bool PPCheck(int moveIndex);
 		void struggle(Pkmn& oppPkmn);
 		
+		//move functions
 		friend void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle);
 		friend void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves);
 		friend void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle);
-
 		
 	private:
 		//pkmn type
@@ -70,6 +74,7 @@ class Pkmn {
 		int EVA = 1; //100/100
 		
 		//pkmn base stats - stat when multiplier is 0
+		int baseHP;
 		int baseATK;
 		int baseDEF;
 		int baseSATK;
@@ -102,7 +107,6 @@ std::string getNext(std::ifstream& file);
 void returnToBegin(std::ifstream& file);
 
 //in-battle functions
-void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2);
 bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
 bool struggleCheck(Pkmn pkmn);
 

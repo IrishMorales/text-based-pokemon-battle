@@ -248,6 +248,7 @@ Pkmn::Pkmn(ifstream& pkmnList, ifstream& pkmnMoves) {
 	type2 = getNext(pkmnList);
 	
 	HP = setHP(pkmnList);
+	baseHP = HP;
 	ATK = setStat(pkmnList);
 	baseATK = ATK;
 	DEF = setStat(pkmnList);
@@ -353,11 +354,11 @@ void returnToBegin(ifstream& file) {
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
 	cout << "\n";
 	printShortSep();
-	cout << pkmn1.name << " / LVL " << pkmn1.lvl << "\n";
-	cout << "HP: " << pkmn1.HP << " / ATK: " << pkmn1.ATK << " / DEF: " << pkmn1.DEF << " / SATK: " << pkmn1.SATK << " / SDEF: " << pkmn1.SDEF << " / SPD: " << pkmn1.SPD << "\n";
+	cout << pkmn1.name << " LVL " << pkmn1.lvl << "\n";
+	cout << "HP: " << pkmn1.HP << "/" << pkmn1.baseHP << "\nATK: " << pkmn1.ATK << " DEF: " << pkmn1.DEF << " SATK: " << pkmn1.SATK << " SDEF: " << pkmn1.SDEF << " SPD: " << pkmn1.SPD << "\n";
 	printShortSep();
-	cout << pkmn2.name << " / LVL " << pkmn2.lvl << " (WILD)\n";
-	cout << "HP: " << pkmn2.HP << " / ATK: " << pkmn2.ATK << " / DEF: " << pkmn2.DEF << " / SATK: " << pkmn2.SATK << " / SDEF: " << pkmn2.SDEF << " / SPD: " << pkmn2.SPD << "\n";
+	cout << pkmn2.name << " LVL " << pkmn2.lvl << " (WILD)\n";
+	cout << "HP: " << pkmn2.HP << "/" << pkmn2.baseHP << "\nATK: " << pkmn2.ATK << " DEF: " << pkmn2.DEF << " SATK: " << pkmn2.SATK << " SDEF: " << pkmn2.SDEF << " SPD: " << pkmn2.SPD << "\n";
 	printShortSep();
 	cout << "\n";
 }

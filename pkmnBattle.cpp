@@ -11,52 +11,59 @@ int main() {
 	cout << "Welcome to the world of Pokemon!\n";
 	checkData(pkmnList, pkmnMoves);
 	
-	printLongSep();
-	cout << "Getting your Pokemon ready...\n";
-	Pkmn pkmn1(pkmnList, pkmnMoves);
-    
-    printLongSep();
-    cout << "Getting the opponent Pokemon ready...\n";
-    Pkmn pkmn2(pkmnList, pkmnMoves);
+	bool replay = true;
 	
-	printLongSep();
-	cout << "A wild " << pkmn2.name << " appeared!\n";
-	cout << "Go! " << pkmn1.name << "!\n";
-	
-	bool inBattle = true;
-	
-	while (inBattle) {
-		printBothPkmnInfo(pkmn1, pkmn2);
+	while (replay) {
+		printLongSep();
+		cout << "Getting your Pokemon ready...\n";
+		Pkmn pkmn1(pkmnList, pkmnMoves);
+	    
+	    printLongSep();
+	    cout << "Getting the opponent Pokemon ready...\n";
+	    Pkmn pkmn2(pkmnList, pkmnMoves);
 		
-		//pkmn w higher speed goes first
-		if (pkmn1.SPD > pkmn2.SPD) {
-			pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+		printLongSep();
+		cout << "A wild " << pkmn2.name << " appeared!\n";
+		cout << "Go! " << pkmn1.name << "!\n";
+		
+		bool inBattle = true;
+		
+		while (inBattle) {
+			printBothPkmnInfo(pkmn1, pkmn2);
+			
+			//pkmn w higher speed goes first
+			if (pkmn1.SPD > pkmn2.SPD) {
+				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+				
+				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
+				if (!inBattle) {break;}
+				
+				printBothPkmnInfo(pkmn1, pkmn2);
+				pkmn2Move(pkmn2, pkmn1, inBattle);
+			}
+			
+			else {
+				pkmn2Move(pkmn2, pkmn1, inBattle);
+				
+				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
+				if (!inBattle) {break;}
+				
+				printBothPkmnInfo(pkmn1, pkmn2);
+				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+			}
+			printLongSep();
 			
 			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 			if (!inBattle) {break;}
-			
-			printBothPkmnInfo(pkmn1, pkmn2);
-			pkmn2Move(pkmn2, pkmn1, inBattle);
-		}
-		
-		else {
-			pkmn2Move(pkmn2, pkmn1, inBattle);
-			
-			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
-			if (!inBattle) {break;}
-			
-			printBothPkmnInfo(pkmn1, pkmn2);
-			pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
 		}
 		printLongSep();
+		cout << "\n";
+		cout << "The battle has ended!\n";
 		
-		inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
-		if (!inBattle) {break;}
+		replay = replayCheck();
 	}
-	printLongSep();
-	cout << "\n";
-	cout << "The battle has ended!\n";
-	//try again function here
+	
+	cout << "Thank you for playing! :)\n";
 }
 	/*			
 			//accuracy check

@@ -275,9 +275,9 @@ Pkmn::Pkmn(ifstream& pkmnList, ifstream& pkmnMoves) {
 		moveACC[i] = stoi(getNext(pkmnMoves));
 				
 		if (moveCat[i] == "PREPR" || moveCat[i] == "PREP") {
-			moveRep1[i] = stoi(getNext(pkmnMoves));
+			moveMinRep[i] = stoi(getNext(pkmnMoves));
 			if (moveCat[i] == "PREPR") {
-					moveRep2[i] = stoi(getNext(pkmnMoves)) -1;
+					moveMaxRep[i] = stoi(getNext(pkmnMoves)) -1;
 			}
 		}
 	}
@@ -512,4 +512,14 @@ void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
 	else {
 		pkmn2.struggle(pkmn1);
 	}
+}
+
+bool replayCheck() {
+	string s;
+	cout << "Play again? Enter Y to replay and anything else to exit.\n";
+	cout << "YOU: ";
+	getline(cin,s);
+	cout << "\n";
+	if (s == "Y" || s == "y") {return true;}
+	else {return false;}
 }

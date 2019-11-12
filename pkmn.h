@@ -105,3 +105,5 @@ void returnToBegin(std::ifstream& file);
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2);
 bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
 bool struggleCheck(Pkmn pkmn);
+
+bool replayCheck();

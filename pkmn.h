@@ -62,8 +62,8 @@ class Pkmn {
 		int movebasePP[4];
 		int movePWR[4];
 		int moveACC[4];
-		int moveRep1[4];
-		int moveRep2[4];
+		int moveMinRep[4];
+		int moveMaxRep[4];
 		
 		//pkmn hidden stats
 		int ACC = 1; //100/100

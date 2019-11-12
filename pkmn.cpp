@@ -375,6 +375,9 @@ void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
 	Stat-changing Moves (ATKO, DEFO, ACCO, SATKO, SDEFO, SPDO, ACCO, EVAO, ATKS, DEFS, ACCS, SATKS, SDEFS, SPDS, ACCS, EVAS):
 	Index, Move, Type, Category, PP, Stage Multiplier, Accuracy
 	
+	Repeating moves (PREPR):
+	Index, Move, Type, Category, PP, Power, Accuracy, Min Repetitions, Max Repetitions
+	
 	//!!!CHECK EVA STAT MODIFIERS: SHOULD BE OPPOSITE ACC
 	*/
 	if (cat == "PHYSICAL")		{pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);}

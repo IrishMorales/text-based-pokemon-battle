@@ -35,8 +35,6 @@ int main() {
 			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 			if (!inBattle) {break;}
 			
-			//wait();
-			
 			printBothPkmnInfo(pkmn1, pkmn2);
 			pkmn2Move(pkmn2, pkmn1, inBattle);
 		}
@@ -47,8 +45,6 @@ int main() {
 			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 			if (!inBattle) {break;}
 			
-			//wait();
-			
 			printBothPkmnInfo(pkmn1, pkmn2);
 			pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
 		}
@@ -56,8 +52,6 @@ int main() {
 		
 		inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 		if (!inBattle) {break;}
-		
-		//wait();
 	}
 	printLongSep();
 	cout << "\n";

@@ -442,13 +442,6 @@ bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle) {
 	return inBattle;
 }
 
-/* 
-//MinGW does not currently support threading
-void wait() {
-    this_thread::sleep_for(std::chrono::milliseconds(5));
-}
-*/
-
 bool struggleCheck(Pkmn pkmn) {
 	if (all_of(pkmn.movePP,pkmn.movePP + 4, [](int currMovePP){return currMovePP == 0;})) {
 		return true;
@@ -505,6 +498,11 @@ void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
 		//get index for random move
 		srand(time(0));
 		int moveIndex = rand() % 4;	
+		
+		while (pkmn2.movePP[moveIndex] == 0) {
+			srand(time((long int*)moveIndex));
+			int moveIndex = rand() % 4;	
+		}
 		
 		if (pkmn2.PPCheck(moveIndex)) {cout << "The wild " << pkmn2.name << " used " << pkmn2.move[moveIndex] << "!\n";}
 		moveEffect(pkmn2, pkmn1, moveIndex, inBattle);

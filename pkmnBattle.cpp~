@@ -1,0 +1,85 @@
+#include <algorithm>
+#include <iostream>
+#include "pkmn.h"
+using namespace std;
+
+int main() {
+	ifstream pkmnList;
+	ifstream pkmnMoves;
+
+	//add welcome msg function here
+	cout << "________      ______                                    ________       ________________\n
+		___  __ \\________  /_____________ ________________      ___  __ )_____ __  /__  /___  /____\n
+		__  /_/ /  __ \\_  //_/  _ \\_  __ `__ \\  __ \\_  __ \\     __  __  |  __ `/  __/  __/_  /_  _ \\\n
+		_  ____// /_/ /  ,<  /  __/  / / / / / /_/ /  / / /     _  /_/ // /_/ // /_ / /_ _  / /  __/\n
+		/_/     \\____//_/|_| \\___//_/ /_/ /_/\\____//_/ /_/      /_____/ \\__,_/ \\__/ \\__/ /_/  \\___/\n
+		\n
+		____________                  ______      _____\n
+		__  ___/__(_)______ _______  ____  /_____ __  /______________\n
+		_____ \\__  /__  __ `__ \\  / / /_  /_  __ `/  __/  __ \\_  ___/\n
+		____/ /_  / _  / / / / / /_/ /_  / / /_/ // /_ / /_/ /  /\n
+		/____/ /_/  /_/ /_/ /_/\\__,_/ /_/  \\__,_/ \\__/ \\____//_/\n"                                    
+                                                          "
+	cout << "Welcome to the world of Pokemon!\n";
+	checkData(pkmnList, pkmnMoves);
+	
+	bool replay = true;
+	
+	while (replay) {
+		printLongSep();
+		cout << "Getting your Pokemon ready...\n";
+		Pkmn pkmn1(pkmnList, pkmnMoves);
+	    
+	    printLongSep();
+	    cout << "Getting the opponent Pokemon ready...\n";
+	    Pkmn pkmn2(pkmnList, pkmnMoves);
+		
+		printLongSep();
+		cout << "A wild " << pkmn2.name << " appeared!\n";
+		cout << "Go! " << pkmn1.name << "!\n";
+		
+		bool inBattle = true;
+		
+		while (inBattle) {
+			printBothPkmnInfo(pkmn1, pkmn2);
+			
+			//pkmn w higher speed goes first
+			if (pkmn1.SPD > pkmn2.SPD) {
+				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+				
+				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
+				if (!inBattle) {break;}
+				
+				printBothPkmnInfo(pkmn1, pkmn2);
+				pkmn2Move(pkmn2, pkmn1, inBattle);
+			}
+			
+			else {
+				pkmn2Move(pkmn2, pkmn1, inBattle);
+				
+				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
+				if (!inBattle) {break;}
+				
+				printBothPkmnInfo(pkmn1, pkmn2);
+				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+			}
+			printLongSep();
+			
+			inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
+			if (!inBattle) {break;}
+		}
+		printLongSep();
+		cout << "\n";
+		cout << "The battle has ended!\n";
+		
+		replay = replayCheck();
+	}
+	
+	cout << "Thank you for playing! :)\n";
+}
+	/*			
+			//accuracy check
+			if (rand() % 100 + 1 > (pkmn1.moveACC[ind]*(pkmn1.ACC/pkmn2.EVA))){
+				cout << pkmn1.name << " missed!" << endl;
+				goto PKMN2F1;
+			}*/

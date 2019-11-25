@@ -98,6 +98,8 @@ void printLongSep();
 void printShortSep();
 void printCurlySep();
 
+void printWelcome();
+
 //read txt files
 void errorCannotOpen(std::string filename);
 void checkData(std::ifstream& pkmnList, std::ifstream& pkmnMoves);

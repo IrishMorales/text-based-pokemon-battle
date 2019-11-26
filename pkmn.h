@@ -35,18 +35,17 @@ class Pkmn {
 		void printPkmnMoves();
 		void debug();
 		
-		//PPCheck functions
+		//PP-related functions
 		bool PPCheck(int moveIndex);
+		bool struggleCheck();
 		void struggle(Pkmn& oppPkmn);
 		
 		//move functions
-		friend void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle);
-		friend void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves);
-		friend void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle);
+		void moveEffect(Pkmn& pkmnB, int ind, bool& inBattle);
+		void makeMove(Pkmn& pkmnB, bool isPlayer, bool& inBattle, std::ifstream& pkmnMoves);
 		
 		//check functions
 		friend bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
-		friend bool struggleCheck(Pkmn pkmn);
 		
 	private:
 		

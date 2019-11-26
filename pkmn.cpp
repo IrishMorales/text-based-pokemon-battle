@@ -290,8 +290,6 @@ Pkmn::Pkmn(std::ifstream& pkmnList, std::ifstream& pkmnMoves) {
 	std::cout << name << " is ready!\n";
 }
 
-//non-member functions
-
 //capitalize entire std::string
 std::string capitalize(std::string s) {
 	for (unsigned int i = 0; i < s.length(); ++i) s[i]=toupper(s[i]);
@@ -385,8 +383,8 @@ void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
 
 //changes pkmn stats based on move
 //pkmn1 - attacker, pkmn2 - receiver
-void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
-	std::string cat = pkmn1.moveCat[ind];
+void Pkmn::moveEffect(Pkmn& pkmnB, int ind, bool& inBattle) {
+	std::string cat = moveCat[ind];
 	/*
 	Columns for pkmnMoves.txt:
 
@@ -401,34 +399,34 @@ void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
 	
 	//!!!CHECK EVA STAT MODIFIERS: SHOULD BE OPPOSITE ACC
 	*/
-	if (cat == "PHYSICAL")		{pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);}
-	else if (cat == "SPECIAL")	{pkmn2.HP -= pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.SATK, pkmn2.SDEF);}
+	if (cat == "PHYSICAL")		{pkmnB.HP -= dmg(lvl, movePWR[ind], ATK, pkmnB.DEF);}
+	else if (cat == "SPECIAL")	{pkmnB.HP -= dmg(lvl, movePWR[ind], SATK, pkmnB.SDEF);}
 	else { //Status Moves
 	
 		//change stat of other pokemon
-		if (cat == "ATKO")		{pkmn2.ATKmult = pkmn2.modMult(pkmn2.ATKmult, pkmn1.movePWR[ind]);	pkmn2.ATK = pkmn2.modStat(pkmn2.baseATK, pkmn2.ATKmult);}
-		else if (cat == "DEFO")	{pkmn2.DEFmult = pkmn2.modMult(pkmn2.DEFmult, pkmn1.movePWR[ind]);	pkmn2.DEF = pkmn2.modStat(pkmn2.baseDEF, pkmn2.DEFmult);}
-		else if (cat == "SATKO"){pkmn2.SATKmult = pkmn2.modMult(pkmn2.SATKmult, pkmn1.movePWR[ind]);pkmn2.SATK = pkmn2.modStat(pkmn2.baseSATK, pkmn2.SATKmult);}
-		else if (cat == "SDEFO"){pkmn2.SDEFmult = pkmn2.modMult(pkmn2.SDEFmult, pkmn1.movePWR[ind]);pkmn2.SDEF = pkmn2.modStat(pkmn2.baseSDEF, pkmn2.SDEFmult);}
-		else if (cat == "SPDO")	{pkmn2.SPDmult = pkmn2.modMult(pkmn2.SPDmult, pkmn1.movePWR[ind]); 	pkmn2.SPD = pkmn2.modStat(pkmn2.baseSPD, pkmn2.SPDmult);}
-		else if (cat == "ACCO")	{pkmn2.ACCmult = pkmn2.modMult(pkmn2.ACCmult, pkmn1.movePWR[ind]);	pkmn2.ACC = pkmn2.modStat(pkmn2.ACC, pkmn2.ACCmult);}
-		else if (cat == "EVAO")	{pkmn2.EVAmult = pkmn2.modMult(pkmn2.EVAmult, pkmn1.movePWR[ind]);	pkmn2.EVA = pkmn2.modStat(pkmn2.EVA, pkmn2.EVAmult);}
+		if (cat == "ATKO")		{pkmnB.ATKmult = pkmnB.modMult(pkmnB.ATKmult, movePWR[ind]);	pkmnB.ATK = pkmnB.modStat(pkmnB.baseATK, pkmnB.ATKmult);}
+		else if (cat == "DEFO")	{pkmnB.DEFmult = pkmnB.modMult(pkmnB.DEFmult, movePWR[ind]);	pkmnB.DEF = pkmnB.modStat(pkmnB.baseDEF, pkmnB.DEFmult);}
+		else if (cat == "SATKO"){pkmnB.SATKmult= pkmnB.modMult(pkmnB.SATKmult,movePWR[ind]);	pkmnB.SATK= pkmnB.modStat(pkmnB.baseSATK, pkmnB.SATKmult);}
+		else if (cat == "SDEFO"){pkmnB.SDEFmult= pkmnB.modMult(pkmnB.SDEFmult,movePWR[ind]);	pkmnB.SDEF= pkmnB.modStat(pkmnB.baseSDEF, pkmnB.SDEFmult);}
+		else if (cat == "SPDO")	{pkmnB.SPDmult = pkmnB.modMult(pkmnB.SPDmult, movePWR[ind]); 	pkmnB.SPD = pkmnB.modStat(pkmnB.baseSPD, pkmnB.SPDmult);}
+		else if (cat == "ACCO")	{pkmnB.ACCmult = pkmnB.modMult(pkmnB.ACCmult, movePWR[ind]);	pkmnB.ACC = pkmnB.modStat(pkmnB.ACC, pkmnB.ACCmult);}
+		else if (cat == "EVAO")	{pkmnB.EVAmult = pkmnB.modMult(pkmnB.EVAmult, movePWR[ind]);	pkmnB.EVA = pkmnB.modStat(pkmnB.EVA, pkmnB.EVAmult);}
 		
 		//change stat of self
-		else if (cat == "ATKS")	{pkmn1.ATKmult = pkmn1.modMult(pkmn1.ATKmult, pkmn1.movePWR[ind]); 	pkmn1.ATK = pkmn1.modStat(pkmn1.baseATK, pkmn1.ATKmult);}
-		else if (cat == "DEFS")	{pkmn1.DEFmult = pkmn1.modMult(pkmn1.DEFmult, pkmn1.movePWR[ind]); 	pkmn1.DEF = pkmn1.modStat(pkmn1.baseDEF, pkmn1.DEFmult);}
-		else if (cat == "SATKS"){pkmn1.SATKmult = pkmn1.modMult(pkmn1.SATKmult, pkmn1.movePWR[ind]);pkmn1.SATK = pkmn1.modStat(pkmn1.baseSATK, pkmn1.SATKmult);}
-		else if (cat == "SDEFS"){pkmn1.SDEFmult = pkmn1.modMult(pkmn1.SDEFmult, pkmn1.movePWR[ind]);pkmn1.SDEF = pkmn1.modStat(pkmn1.baseSDEF, pkmn1.SDEFmult);}
-		else if (cat == "SPDS")	{pkmn1.SPDmult = pkmn1.modMult(pkmn1.SPDmult, pkmn1.movePWR[ind]);	pkmn1.SPD = pkmn1.modStat(pkmn1.baseSPD, pkmn1.SPDmult);}
-		else if (cat == "ACCS")	{pkmn1.ACCmult = pkmn1.modMult(pkmn1.ACCmult, pkmn1.movePWR[ind]);	pkmn1.ACC = pkmn1.modStat(pkmn1.ACC, pkmn1.ACCmult);}
-		else if (cat == "EVAS")	{pkmn1.EVAmult = pkmn1.modMult(pkmn1.EVAmult, pkmn1.movePWR[ind]);	pkmn1.EVA = pkmn1.modStat(pkmn1.EVA, pkmn1.EVAmult);}
+		else if (cat == "ATKS")	{ATKmult = modMult(ATKmult, movePWR[ind]); 	ATK = modStat(baseATK, ATKmult);}
+		else if (cat == "DEFS")	{DEFmult = modMult(DEFmult, movePWR[ind]); 	DEF = modStat(baseDEF, DEFmult);}
+		else if (cat == "SATKS"){SATKmult= modMult(SATKmult,movePWR[ind]);	SATK= modStat(baseSATK, SATKmult);}
+		else if (cat == "SDEFS"){SDEFmult= modMult(SDEFmult,movePWR[ind]);	SDEF= modStat(baseSDEF, SDEFmult);}
+		else if (cat == "SPDS")	{SPDmult = modMult(SPDmult, movePWR[ind]);	SPD = modStat(baseSPD, SPDmult);}
+		else if (cat == "ACCS")	{ACCmult = modMult(ACCmult, movePWR[ind]);	ACC = modStat(ACC, ACCmult);}
+		else if (cat == "EVAS")	{EVAmult = modMult(EVAmult, movePWR[ind]);	EVA = modStat(EVA, EVAmult);}
 		
 		//instantly ends battle
-		else if (cat == "OHKO") {pkmn2.HP = 0;}
+		else if (cat == "OHKO") {pkmnB.HP = 0;}
 		else if (cat == "FLEE")	{inBattle = false;} //add battle end message here
 		
 		//moves whose damage is always constant
-		else if (cat == "SAME")	{pkmn2.HP -= pkmn1.movePWR[ind]; if(pkmn1.movePWR[ind] == 0) {std::cout << "But nothing happened!\n";}}
+		else if (cat == "SAME")	{pkmnB.HP -= movePWR[ind]; if(movePWR[ind] == 0) {std::cout << "But nothing happened!\n";}}
 		
 		//moves that hit multiple times
 		/*
@@ -462,8 +460,8 @@ bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle) {
 	return inBattle;
 }
 
-bool struggleCheck(Pkmn pkmn) {
-	if (std::all_of(pkmn.movePP,pkmn.movePP + 4, [](int currMovePP){return currMovePP == 0;})) {
+bool Pkmn::struggleCheck() {
+	if (std::all_of(movePP,movePP + 4, [](int currMovePP){return currMovePP == 0;})) {
 		return true;
 	}
 	else {
@@ -492,44 +490,38 @@ void Pkmn::struggle(Pkmn& oppPkmn) {
 	HP -= struggleDmg/2;
 }
 
-void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves) {
-	pkmn1.printPkmnMoves();
+void Pkmn::makeMove(Pkmn& pkmnB, bool isPlayer, bool& inBattle, std::ifstream& pkmnMoves) {
+	printPkmnMoves();
 	
-	//if any move still has PP, prompt for move
-	if (!struggleCheck(pkmn1)) {
-		std::cout << "What should " << pkmn1.name << " do?\n";
-	
-		int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, pkmn1.getValidMove(pkmnMoves, true)));
+	//if any move still has PP, move
+	if (!struggleCheck()) {
+		//if player is moving
+		if (isPlayer) {
+			std::cout << "What should " << name << " do?\n";
 		
-		if (pkmn1.PPCheck(moveIndex)) {std::cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";}
-		moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
-	}
-	//if no PP, struggle
-	else {
-		pkmn1.struggle(pkmn2);
-	}
-}
-
-void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
-	
-	//if any move still has PP, prompt for move
-	if (!struggleCheck(pkmn2)) {
-		
-		//get index for random move
-		srand(time(0));
-		int moveIndex = rand() % 4;	
-		
-		while (pkmn2.movePP[moveIndex] == 0) {
-			srand(time((long int*)moveIndex));
-			int moveIndex = rand() % 4;	
+			int moveIndex = distance(move, find(move, move + 4, getValidMove(pkmnMoves, true)));
+			
+			if (PPCheck(moveIndex)) {std::cout << name << " used " << move[moveIndex] << "!\n";}
+			moveEffect(pkmnB, moveIndex, inBattle);
 		}
-		
-		if (pkmn2.PPCheck(moveIndex)) {std::cout << "The wild " << pkmn2.name << " used " << pkmn2.move[moveIndex] << "!\n";}
-		moveEffect(pkmn2, pkmn1, moveIndex, inBattle);
+		//if opponent is moving
+		else {
+			//get index for random move
+			srand(time(0));
+			int moveIndex = rand() % 4;	
+			
+			while (movePP[moveIndex] == 0) {
+				srand(time((long int*)moveIndex));
+				int moveIndex = rand() % 4;	
+			}
+			
+			if (PPCheck(moveIndex)) {std::cout << "The wild " << name << " used " << move[moveIndex] << "!\n";}
+			moveEffect(pkmnB, moveIndex, inBattle);
+		}
 	}
 	//if no PP, struggle
 	else {
-		pkmn2.struggle(pkmn1);
+		struggle(pkmnB);
 	}
 }
 

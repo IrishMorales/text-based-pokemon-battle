@@ -31,23 +31,23 @@ int main() {
 			
 			//pkmn w higher speed goes first
 			if (pkmn1.compareSPD(pkmn2)) {
-				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+				pkmn1.makeMove(pkmn2, true, inBattle, pkmnMoves);
 				
 				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 				if (!inBattle) {break;}
 				
 				printBothPkmnInfo(pkmn1, pkmn2);
-				pkmn2Move(pkmn2, pkmn1, inBattle);
+				pkmn2.makeMove(pkmn1, false, inBattle, pkmnMoves);
 			}
 			
 			else {
-				pkmn2Move(pkmn2, pkmn1, inBattle);
+				pkmn2.makeMove(pkmn1, false, inBattle, pkmnMoves);
 				
 				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);
 				if (!inBattle) {break;}
 				
 				printBothPkmnInfo(pkmn1, pkmn2);
-				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
+				pkmn1.makeMove(pkmn2, true, inBattle, pkmnMoves);
 			}
 			printLongSep();
 			

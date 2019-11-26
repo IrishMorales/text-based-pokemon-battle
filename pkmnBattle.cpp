@@ -1,11 +1,10 @@
 #include <algorithm>
 #include <iostream>
 #include "pkmn.h"
-using namespace std;
 
 int main() {
-	ifstream pkmnList;
-	ifstream pkmnMoves;
+	std::ifstream pkmnList;
+	std::ifstream pkmnMoves;
 
 	printWelcome();
 	checkData(pkmnList, pkmnMoves);
@@ -14,16 +13,16 @@ int main() {
 	
 	while (replay) {
 		printLongSep();
-		cout << "Getting your Pokemon ready...\n";
+		std::cout << "Getting your Pokemon ready...\n";
 		Pkmn pkmn1(pkmnList, pkmnMoves);
 	    
 	    printLongSep();
-	    cout << "Getting the opponent Pokemon ready...\n";
+	    std::cout << "Getting the opponent Pokemon ready...\n";
 	    Pkmn pkmn2(pkmnList, pkmnMoves);
 		
 		printLongSep();
-		cout << "A wild " << pkmn2.name << " appeared!\n";
-		cout << "Go! " << pkmn1.name << "!\n";
+		std::cout << "A wild " << pkmn2.name << " appeared!\n";
+		std::cout << "Go! " << pkmn1.name << "!\n";
 		
 		bool inBattle = true;
 		
@@ -56,17 +55,16 @@ int main() {
 			if (!inBattle) {break;}
 		}
 		printLongSep();
-		cout << "\n";
-		cout << "The battle has ended!\n";
+		std::cout << "\n";
+		std::cout << "The battle has ended!\n";
 		
 		replay = replayCheck();
 	}
 	
-	cout << "Thank you for playing! :)\n";
+	std::cout << "Thank you for playing! :)\n";
 }
 	/*			
 			//accuracy check
 			if (rand() % 100 + 1 > (pkmn1.moveACC[ind]*(pkmn1.ACC/pkmn2.EVA))){
-				cout << pkmn1.name << " missed!" << endl;
-				goto PKMN2F1;
+				std::cout << pkmn1.name << " missed!" << std::endl;
 			}*/

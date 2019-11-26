@@ -3,63 +3,62 @@
 #include <chrono>
 #include <ctime>
 #include "pkmn.h"
-using namespace std;
 
 //check if name is valid
-bool Pkmn::checkValidName(string tmpName, ifstream& pkmnList) {
+bool Pkmn::checkValidName(std::string tmpName, std::ifstream& pkmnList) {
 	//if name not all alphabetical char
 	if (tmpName.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		cout << "That's one weird Pokemon. Try again?\n";
-		cout << "\n";
+		std::cout << "That's one weird Pokemon. Try again?\n";
+		std::cout << "\n";
 		return false;
 	}
 	
 	else {
 		returnToBegin(pkmnList);
-		string tmpLine;
+		std::string tmpLine;
 		
 		//search message
-		cout << "Finding a wild " << tmpName << "...\n";
+		std::cout << "Finding a wild " << tmpName << "...\n";
 		
 		//search pkmnList for name
-		while (getline(pkmnList, tmpLine, ',')) {	
+		while (std::getline(pkmnList, tmpLine, ',')) {	
 	        if (tmpLine == tmpName) {
 	        	return true;
 	    	}
 		}
 		
 		//if name not found in pkmnList.txt
-		cout << "Looks like " << tmpName << " isn't a Pokemon. :(\n";
-		cout << "TIPS: Check spelling or see pkmnList.txt in folder pkmn-data for valid Pokemon.\n";
-		cout << "\n";
+		std::cout << "Looks like " << tmpName << " isn't a Pokemon. :(\n";
+		std::cout << "TIPS: Check spelling or see pkmnList.txt in folder pkmn-data for valid Pokemon.\n";
+		std::cout << "\n";
 		return false;
 	}
 }
 
 //prompt user for valid name
-string Pkmn::getValidName(ifstream& pkmnList) {
-	string tmpName;
+std::string Pkmn::getValidName(std::ifstream& pkmnList) {
+	std::string tmpName;
 	bool validName = false;
 	
 	while (!validName) {
-		cout << "Please input a Pokemon.\n";
-		cout << "YOU: ";
-		getline (cin, tmpName);
-		cout << "\n";
+		std::cout << "Please input a Pokemon.\n";
+		std::cout << "YOU: ";
+		std::getline (std::cin, tmpName);
+		std::cout << "\n";
 		tmpName = capitalize(tmpName);
 		validName = checkValidName(tmpName, pkmnList);
 	}
 	
-	cout << "Found " << tmpName << "!\n";
+	std::cout << "Found " << tmpName << "!\n";
 	return tmpName;
 }
 
 //check if lvl is valid
-bool Pkmn::checkValidLvl(string tmpLvl) {
+bool Pkmn::checkValidLvl(std::string tmpLvl) {
 	//lvl must be within 1-100
 	if (tmpLvl.find_first_not_of("1234567890") != std::string::npos || !(stoi(tmpLvl) > 0 && stoi(tmpLvl) < 101)) {
-		cout << "Level '" << tmpLvl << "' doesn't seem right.\n";
-		cout << "\n";
+		std::cout << "Level '" << tmpLvl << "' doesn't seem right.\n";
+		std::cout << "\n";
 		return false;
 	}
 	
@@ -68,31 +67,31 @@ bool Pkmn::checkValidLvl(string tmpLvl) {
 
 //prompt user for valid lvl
 int Pkmn::getValidLvl() {
-	string tmpLvl;
+	std::string tmpLvl;
 	bool validLvl = false;
 	
-	cout << "What level will " << name << " be?\n";
+	std::cout << "What level will " << name << " be?\n";
 	
 	while (!validLvl) {
-		cout << "Please input a level within 1-100.\n";
-		cout << "YOU: ";
-		getline (cin, tmpLvl);
-		cout << "\n";
+		std::cout << "Please input a level within 1-100.\n";
+		std::cout << "YOU: ";
+		std::getline (std::cin, tmpLvl);
+		std::cout << "\n";
 		validLvl = checkValidLvl(tmpLvl);
 	}
 	
-	cout << "Level " << stoi(tmpLvl) << " set!\n";
+	std::cout << "Level " << stoi(tmpLvl) << " set!\n";
 	return stoi(tmpLvl);
 }
 
 //check if move is valid
-bool Pkmn::checkValidMove(string tmpMove, ifstream& pkmnMoves, bool inBattle) {
-	string* moveIt = find(move, move + 4, tmpMove);
+bool Pkmn::checkValidMove(std::string tmpMove, std::ifstream& pkmnMoves, bool inBattle) {
+	std::string* moveIt = find(move, move + 4, tmpMove);
 	
 	//if move not all alphabetical char
 	if (tmpMove.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ '-") != std::string::npos) {
-		cout << "Hey there! You probably used some weird number or punctuation. Try again?\n";
-		cout << "\n";
+		std::cout << "Hey there! You probably used some weird number or punctuation. Try again?\n";
+		std::cout << "\n";
 		return false;
 	}
 	
@@ -100,8 +99,8 @@ bool Pkmn::checkValidMove(string tmpMove, ifstream& pkmnMoves, bool inBattle) {
 	else if (moveIt != move + 4) {
 		//if choosing moves, invalid if move is already known
 		if (!inBattle) {
-			cout << "This Pokemon already knows " << tmpMove << "!\n";
-			cout << "\n";
+			std::cout << "This Pokemon already knows " << tmpMove << "!\n";
+			std::cout << "\n";
 			return false;
 		}
 		//if in battle, valid if move is in moveset & PP > 0
@@ -115,51 +114,51 @@ bool Pkmn::checkValidMove(string tmpMove, ifstream& pkmnMoves, bool inBattle) {
 		//if choosing moves, find in move list
 		if (!inBattle) {
 			returnToBegin(pkmnMoves);
-			string tmpLine;
+			std::string tmpLine;
 				
 			//search pkmnMoves for move
-			while (getline(pkmnMoves, tmpLine, ',')) {	
+			while (std::getline(pkmnMoves, tmpLine, ',')) {	
 			    if (tmpLine == tmpMove) {
 			    	return true;
 				}
 			}
 				
 			//if move not found in pkmnMoves.txt
-			cout << "Sorry, we couldn't find that! :(\n";
-			cout << "TIPS: Check spelling or see pkmnMoves.txt in folder pkmn-data for valid moves.\n";
-			cout << "\n";
+			std::cout << "Sorry, we couldn't find that! :(\n";
+			std::cout << "TIPS: Check spelling or see pkmnMoves.txt in folder pkmn-data for valid moves.\n";
+			std::cout << "\n";
 			return false;
 		}
 		//if in battle, invalid if not known
 		else if (inBattle) {
-			cout << "Please input a known move.\n";
+			std::cout << "Please input a known move.\n";
 			return false;
 		}
 	}
 }
 
 //prompt user for valid move
-string Pkmn::getValidMove(ifstream& pkmnMoves, bool inBattle) {
-	string tmpMove;
+std::string Pkmn::getValidMove(std::ifstream& pkmnMoves, bool inBattle) {
+	std::string tmpMove;
 	bool validMove = false;
 	
 	while (!validMove) {
-		if (!inBattle) cout << "Please input any valid move for " << name << ".\n";
-		cout << "YOU: ";
-		getline (cin, tmpMove);
-		cout << "\n";
+		if (!inBattle) std::cout << "Please input any valid move for " << name << ".\n";
+		std::cout << "YOU: ";
+		std::getline (std::cin, tmpMove);
+		std::cout << "\n";
 		tmpMove = capitalize(tmpMove);
 		validMove = checkValidMove(tmpMove, pkmnMoves, inBattle);
 	}
 	
-	if (!inBattle) cout << name << " learned " << tmpMove << "!\n";
+	if (!inBattle) std::cout << name << " learned " << tmpMove << "!\n";
 	return tmpMove;
 }
 
 //compute HP with base HP and lvl
-int Pkmn::setHP(ifstream& pkmnList) {
-	string tmpLine;
-	getline (pkmnList, tmpLine, ',');
+int Pkmn::setHP(std::ifstream& pkmnList) {
+	std::string tmpLine;
+	std::getline (pkmnList, tmpLine, ',');
 	
 	int bHP = stoi(tmpLine);
 	int HP = static_cast<int>(((2*bHP*lvl)/100) + 10 + lvl);
@@ -168,9 +167,9 @@ int Pkmn::setHP(ifstream& pkmnList) {
 }
 		
 //compute stat with base stat and lvl
-int Pkmn::setStat(ifstream& pkmnList) {
-	string tmpLine;
-	getline (pkmnList, tmpLine, ',');
+int Pkmn::setStat(std::ifstream& pkmnList) {
+	std::string tmpLine;
+	std::getline (pkmnList, tmpLine, ',');
 	
 	int bStat = stoi(tmpLine);
 	int stat = static_cast<int>(((2*bStat*lvl)/100) + 5);
@@ -199,43 +198,43 @@ int Pkmn::modMult(int statMult, int moveMult) {
 int Pkmn::modStat(int bstat, int statMult) {
 	//formula based on stat multipliers
 	//stat multipliers table from https://bulbapedia.bulbagarden.net/wiki/Statistic#Stage_multipliers
-	int finalStat = bstat * max(2, 2 + statMult)/max(2, 2-statMult);
+	int finalStat = bstat * std::max(2, 2 + statMult)/std::max(2, 2-statMult);
 	return finalStat;
 }
 
 void Pkmn::printPkmnMoves() {
 	printCurlySep();
-	cout << name << "'s Moveset:\n";
-	cout << " [#]  Move\n";
+	std::cout << name << "'s Moveset:\n";
+	std::cout << " [#]  Move\n";
 	for (int i = 0; i < 4; ++i) {
-		cout << " [" << i << "]  " << move[i] << "    PP: " << movePP[i] << "/" << movebasePP[i] << "\n";
+		std::cout << " [" << i << "]  " << move[i] << "    PP: " << movePP[i] << "/" << movebasePP[i] << "\n";
 	}
 	printCurlySep();
 }
 
 //DEBUG TOOLS: print pkmn info
 void Pkmn::debug() {
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	cout << "DEBUG INFO:" << endl;
-	cout << name << endl;
-	cout << lvl << endl;
-	cout << HP << endl;
-	cout << baseATK << endl;
-	cout << baseDEF << endl;
-	cout << baseSATK << endl;
-	cout << baseSDEF << endl;
-	cout << baseSPD << endl;
-	cout << HP << endl;
-	cout << ATK << endl;
-	cout << DEF << endl;
-	cout << SATK << endl;
-	cout << SDEF << endl;
-	cout << SPD << endl;
+	std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+	std::cout << "DEBUG INFO:" << std::endl;
+	std::cout << name << std::endl;
+	std::cout << lvl << std::endl;
+	std::cout << HP << std::endl;
+	std::cout << baseATK << std::endl;
+	std::cout << baseDEF << std::endl;
+	std::cout << baseSATK << std::endl;
+	std::cout << baseSDEF << std::endl;
+	std::cout << baseSPD << std::endl;
+	std::cout << HP << std::endl;
+	std::cout << ATK << std::endl;
+	std::cout << DEF << std::endl;
+	std::cout << SATK << std::endl;
+	std::cout << SDEF << std::endl;
+	std::cout << SPD << std::endl;
 	printPkmnMoves();
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
 }
 
-Pkmn::Pkmn(ifstream& pkmnList, ifstream& pkmnMoves) {
+Pkmn::Pkmn(std::ifstream& pkmnList, std::ifstream& pkmnMoves) {
 	//set pkmn
 	pkmnList.open("pkmn-data/pkmnList.txt");
 	
@@ -286,32 +285,32 @@ Pkmn::Pkmn(ifstream& pkmnList, ifstream& pkmnMoves) {
 	printShortSep();
 	pkmnMoves.close();
 	
-	cout << name << " is ready!\n";
+	std::cout << name << " is ready!\n";
 }
 
 //non-member functions
 
-//capitalize entire string
-string capitalize(string s) {
+//capitalize entire std::string
+std::string capitalize(std::string s) {
 	for (unsigned int i = 0; i < s.length(); ++i) s[i]=toupper(s[i]);
 	return s;
 }
 
 //print separators
 void printLongSep() {
-	cout << "=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=\n";
+	std::cout << "=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=-~-=\n";
 }
 
 void printShortSep() {
-	cout << "-----------------------------------\n";
+	std::cout << "-----------------------------------\n";
 }
 
 void printCurlySep() {
-	cout << "~-~-~-~-~-~-~-~-~-~-~-~-~\n";
+	std::cout << "~-~-~-~-~-~-~-~-~-~-~-~-~\n";
 }
 
 void printWelcome() {
-	cout << "________      ______                                    ________       ________________\n"
+	std::cout << "________      ______                                    ________       ________________\n"
 		"___  __ \\________  /_____________ ________________      ___  __ )_____ __  /__  /___  /____\n"
 		"__  /_/ /  __ \\_  //_/  _ \\_  __ `__ \\  __ \\_  __ \\     __  __  |  __ `/  __/  __/_  /_  _ \\\n"
 		"_  ____// /_/ /  ,<  /  __/  / / / / / /_/ /  / / /     _  /_/ // /_/ // /_ / /_ _  / /  __/\n"
@@ -330,21 +329,21 @@ void printWelcome() {
 
 
 //error message if a file fails to open
-void errorCannotOpen(string filename) {
+void errorCannotOpen(std::string filename) {
 	printLongSep();
-	cout << "ERROR: Unable to open " << filename << ".\n";
-	cout << "\n";
-	cout << "TIPS:\n";
-	cout << "Please check if " << filename << " is in the 'pkmn-data' folder.\n";
-	cout << "Please check if " << filename << " can be opened.\n";
-	cout << "\n";
-	cout << "If " << filename << " is missing or damaged, please re-install from https://github.com/IrishMorales/text-based-pokemon-battle";
+	std::cout << "ERROR: Unable to open " << filename << ".\n";
+	std::cout << "\n";
+	std::cout << "TIPS:\n";
+	std::cout << "Please check if " << filename << " is in the 'pkmn-data' folder.\n";
+	std::cout << "Please check if " << filename << " can be opened.\n";
+	std::cout << "\n";
+	std::cout << "If " << filename << " is missing or damaged, please re-install from https://github.com/IrishMorales/text-based-pokemon-battle";
 	printLongSep();
 	exit(1);
 }
 
 //checks if data files are complete
-void checkData(ifstream& pkmnList, ifstream& pkmnMoves) {
+void checkData(std::ifstream& pkmnList, std::ifstream& pkmnMoves) {
 	//open pkmnList.txt
 	pkmnList.open("pkmn-data/pkmnList.txt");
 	if (!pkmnList) errorCannotOpen("pkmnList.txt");
@@ -357,35 +356,35 @@ void checkData(ifstream& pkmnList, ifstream& pkmnMoves) {
 }
 
 //get next item from stream
-string getNext(ifstream& file) {
-	string tmpLine;
-	getline (file, tmpLine, ',');
+std::string getNext(std::ifstream& file) {
+	std::string tmpLine;
+	std::getline (file, tmpLine, ',');
 	return tmpLine;
 }
 
 //return search pointer to beginning of ifstream file
-void returnToBegin(ifstream& file) {
+void returnToBegin(std::ifstream& file) {
 	file.clear();
-	file.seekg(0, ios::beg);
+	file.seekg(0, std::ios::beg);
 }
 
 //prints both pokemon stats
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
-	cout << "\n";
+	std::cout << "\n";
 	printShortSep();
-	cout << pkmn1.name << " LVL " << pkmn1.lvl << "\n";
-	cout << "HP: " << pkmn1.HP << "/" << pkmn1.baseHP << "\nATK: " << pkmn1.ATK << " DEF: " << pkmn1.DEF << " SATK: " << pkmn1.SATK << " SDEF: " << pkmn1.SDEF << " SPD: " << pkmn1.SPD << "\n";
+	std::cout << pkmn1.name << " LVL " << pkmn1.lvl << "\n";
+	std::cout << "HP: " << pkmn1.HP << "/" << pkmn1.baseHP << "\nATK: " << pkmn1.ATK << " DEF: " << pkmn1.DEF << " SATK: " << pkmn1.SATK << " SDEF: " << pkmn1.SDEF << " SPD: " << pkmn1.SPD << "\n";
 	printShortSep();
-	cout << pkmn2.name << " LVL " << pkmn2.lvl << " (WILD)\n";
-	cout << "HP: " << pkmn2.HP << "/" << pkmn2.baseHP << "\nATK: " << pkmn2.ATK << " DEF: " << pkmn2.DEF << " SATK: " << pkmn2.SATK << " SDEF: " << pkmn2.SDEF << " SPD: " << pkmn2.SPD << "\n";
+	std::cout << pkmn2.name << " LVL " << pkmn2.lvl << " (WILD)\n";
+	std::cout << "HP: " << pkmn2.HP << "/" << pkmn2.baseHP << "\nATK: " << pkmn2.ATK << " DEF: " << pkmn2.DEF << " SATK: " << pkmn2.SATK << " SDEF: " << pkmn2.SDEF << " SPD: " << pkmn2.SPD << "\n";
 	printShortSep();
-	cout << "\n";
+	std::cout << "\n";
 }
 
 //changes pkmn stats based on move
 //pkmn1 - attacker, pkmn2 - receiver
 void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
-	string cat = pkmn1.moveCat[ind];
+	std::string cat = pkmn1.moveCat[ind];
 	/*
 	Columns for pkmnMoves.txt:
 
@@ -427,7 +426,7 @@ void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
 		else if (cat == "FLEE")	{inBattle = false;} //add battle end message here
 		
 		//moves whose damage is always constant
-		else if (cat == "SAME")	{pkmn2.HP -= pkmn1.movePWR[ind]; if(pkmn1.movePWR[ind] == 0) {cout << "But nothing happened!\n";}}
+		else if (cat == "SAME")	{pkmn2.HP -= pkmn1.movePWR[ind]; if(pkmn1.movePWR[ind] == 0) {std::cout << "But nothing happened!\n";}}
 		
 		//moves that hit multiple times
 		/*
@@ -436,14 +435,14 @@ void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
 			for(int j=0; j<k; ++j) {
 				pkmn2.HP-=pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);
 			}
-			cout << pkmn1.move[ind] << " hit " << k << " times!" << endl;
+			std::cout << pkmn1.move[ind] << " hit " << k << " times!" << std::endl;
 		}
 		
 		else if (cat == "PREP"){
 			for(int j=0; j<pkmn1.moveRep1[ind]; ++j) {
 				pkmn2.HP-=pkmn1.dmg(pkmn1.lvl, pkmn1.movePWR[ind], pkmn1.ATK, pkmn2.DEF);
 			}
-			cout << pkmn1.move[ind] << " hit " << pkmn1.moveRep1[ind] << " times!" << endl;
+			std::cout << pkmn1.move[ind] << " hit " << pkmn1.moveRep1[ind] << " times!" << std::endl;
 		}
 		*/
 	}
@@ -451,18 +450,18 @@ void moveEffect(Pkmn& pkmn1, Pkmn& pkmn2, int ind, bool& inBattle) {
 
 bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle) {
 	if (pkmn1.HP <= 0) { 
-		cout << pkmn1.name << " fainted!\n";
+		std::cout << pkmn1.name << " fainted!\n";
 		return false;
 	}
 	else if (pkmn2.HP <= 0) { 
-		cout << "The wild " << pkmn2.name << " fainted!\n";
+		std::cout << "The wild " << pkmn2.name << " fainted!\n";
 		return false;
 	}
 	return inBattle;
 }
 
 bool struggleCheck(Pkmn pkmn) {
-	if (all_of(pkmn.movePP,pkmn.movePP + 4, [](int currMovePP){return currMovePP == 0;})) {
+	if (std::all_of(pkmn.movePP,pkmn.movePP + 4, [](int currMovePP){return currMovePP == 0;})) {
 		return true;
 	}
 	else {
@@ -476,31 +475,31 @@ bool Pkmn::PPCheck(int moveIndex) {
 		return true;
 	}
 	else {
-		cout << name << " tries to use " << move[moveIndex] << "...\n";
-		cout << "...But " << move[moveIndex] << " is out of PP!\n";
+		std::cout << name << " tries to use " << move[moveIndex] << "...\n";
+		std::cout << "...But " << move[moveIndex] << " is out of PP!\n";
 		return false;
 	}
 }
 
 void Pkmn::struggle(Pkmn& oppPkmn) {
-	cout << name << " has no moves left!\n";
-	cout << name << " used Struggle!\n";
+	std::cout << name << " has no moves left!\n";
+	std::cout << name << " used Struggle!\n";
 	int struggleDmg = dmg(lvl, 50, ATK, oppPkmn.DEF);
 	oppPkmn.HP -= struggleDmg;
-	cout << name << " is hit with recoil!\n";
+	std::cout << name << " is hit with recoil!\n";
 	HP -= struggleDmg/2;
 }
 
-void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, ifstream& pkmnMoves) {
+void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves) {
 	pkmn1.printPkmnMoves();
 	
 	//if any move still has PP, prompt for move
 	if (!struggleCheck(pkmn1)) {
-		cout << "What should " << pkmn1.name << " do?\n";
+		std::cout << "What should " << pkmn1.name << " do?\n";
 	
 		int moveIndex = distance(pkmn1.move, find(pkmn1.move, pkmn1.move + 4, pkmn1.getValidMove(pkmnMoves, true)));
 		
-		if (pkmn1.PPCheck(moveIndex)) {cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";}
+		if (pkmn1.PPCheck(moveIndex)) {std::cout << pkmn1.name << " used " << pkmn1.move[moveIndex] << "!\n";}
 		moveEffect(pkmn1, pkmn2, moveIndex, inBattle);
 	}
 	//if no PP, struggle
@@ -523,7 +522,7 @@ void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
 			int moveIndex = rand() % 4;	
 		}
 		
-		if (pkmn2.PPCheck(moveIndex)) {cout << "The wild " << pkmn2.name << " used " << pkmn2.move[moveIndex] << "!\n";}
+		if (pkmn2.PPCheck(moveIndex)) {std::cout << "The wild " << pkmn2.name << " used " << pkmn2.move[moveIndex] << "!\n";}
 		moveEffect(pkmn2, pkmn1, moveIndex, inBattle);
 	}
 	//if no PP, struggle
@@ -533,11 +532,11 @@ void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle) {
 }
 
 bool replayCheck() {
-	string s;
-	cout << "Play again? Enter Y to replay and anything else to exit.\n";
-	cout << "YOU: ";
-	getline(cin,s);
-	cout << "\n";
+	std::string s;
+	std::cout << "Play again? Enter Y to replay and anything else to exit.\n";
+	std::cout << "YOU: ";
+	std::getline(std::cin,s);
+	std::cout << "\n";
 	if (s == "Y" || s == "y") {return true;}
 	else {return false;}
 }

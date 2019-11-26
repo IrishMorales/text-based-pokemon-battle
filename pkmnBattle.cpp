@@ -30,7 +30,7 @@ int main() {
 			printBothPkmnInfo(pkmn1, pkmn2);
 			
 			//pkmn w higher speed goes first
-			if (pkmn1.SPD > pkmn2.SPD) {
+			if (pkmn1.compareSPD(pkmn2)) {
 				pkmn1Move(pkmn1, pkmn2, inBattle, pkmnMoves);
 				
 				inBattle = inBattleCheck(pkmn1, pkmn2, inBattle);

@@ -7,20 +7,6 @@ class Pkmn {
 		//pkmn info
 		std::string name;
 		
-		//pkmn stats - baseStat affected by multiplier
-		int lvl;
-		int HP;
-		int ATK;
-		int DEF;
-		int SATK;
-		int SDEF;
-		int SPD;
-		
-		//pkmn moveset and info
-		std::string move[4];
-		std::string moveCat[4];
-		int movePP[4];
-		
 		//get pkmn names
 		bool checkValidName(std::string tmpName, std::ifstream& pkmnList);
 		std::string getValidName(std::ifstream& pkmnList);
@@ -36,6 +22,8 @@ class Pkmn {
 		//pkmn functions
 		int setHP(std::ifstream& pkmnList);
 		int setStat(std::ifstream& pkmnList);
+		
+		bool compareSPD(Pkmn& pkmnB);
 		
 		//in-battle functions
 		int dmg(int lvl, int movePWR, int ATK1, int DEF2);
@@ -56,7 +44,26 @@ class Pkmn {
 		friend void pkmn1Move(Pkmn& pkmn1, Pkmn& pkmn2, bool& inBattle, std::ifstream& pkmnMoves);
 		friend void pkmn2Move(Pkmn& pkmn2, Pkmn& pkmn1, bool& inBattle);
 		
+		//check functions
+		friend bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
+		friend bool struggleCheck(Pkmn pkmn);
+		
 	private:
+		
+		//pkmn stats - baseStat affected by multiplier
+		int lvl;
+		int HP;
+		int ATK;
+		int DEF;
+		int SATK;
+		int SDEF;
+		int SPD;
+		
+		//pkmn moveset and info
+		std::string move[4];
+		std::string moveCat[4];
+		int movePP[4];
+		
 		//pkmn type
 		std::string type1;
 		std::string type2;
@@ -107,9 +114,5 @@ void checkData(std::ifstream& pkmnList, std::ifstream& pkmnMoves);
 //change txt file pointera
 std::string getNext(std::ifstream& file);
 void returnToBegin(std::ifstream& file);
-
-//in-battle functions
-bool inBattleCheck(Pkmn pkmn1, Pkmn pkmn2, bool inBattle);
-bool struggleCheck(Pkmn pkmn);
 
 bool replayCheck();

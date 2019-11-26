@@ -16,13 +16,12 @@ bool Pkmn::checkValidName(std::string tmpName, std::ifstream& pkmnList) {
 	else {
 		returnToBegin(pkmnList);
 		std::string tmpLine;
-		
-		//search message
 		std::cout << "Finding a wild " << tmpName << "...\n";
 		
 		//search pkmnList for name
 		while (std::getline(pkmnList, tmpLine, ',')) {	
 	        if (tmpLine == tmpName) {
+	        	std::cout << "Found " << tmpName << "!\n";
 	        	return true;
 	    	}
 		}
@@ -48,8 +47,6 @@ std::string Pkmn::getValidName(std::ifstream& pkmnList) {
 		tmpName = capitalize(tmpName);
 		validName = checkValidName(tmpName, pkmnList);
 	}
-	
-	std::cout << "Found " << tmpName << "!\n";
 	return tmpName;
 }
 
@@ -62,6 +59,7 @@ bool Pkmn::checkValidLvl(std::string tmpLvl) {
 		return false;
 	}
 	
+	std::cout << "Level " << stoi(tmpLvl) << " set!\n";
 	return true;
 }
 
@@ -80,7 +78,6 @@ int Pkmn::getValidLvl() {
 		validLvl = checkValidLvl(tmpLvl);
 	}
 	
-	std::cout << "Level " << stoi(tmpLvl) << " set!\n";
 	return stoi(tmpLvl);
 }
 
@@ -175,6 +172,11 @@ int Pkmn::setStat(std::ifstream& pkmnList) {
 	int stat = static_cast<int>(((2*bStat*lvl)/100) + 5);
 	
 	return stat;
+}
+
+bool Pkmn::compareSPD(Pkmn& pkmnB) {
+	if (SPD > pkmnB.SPD) {return true;}
+	else {return false;}
 }
 		
 //compute move damage with attacker's lvl, movePWR, attack, and opponent's defense

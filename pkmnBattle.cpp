@@ -63,7 +63,7 @@ int main() {
 	
 	std::cout << "Thank you for playing! :)\n";
 }
-	/*			
+	/*
 			//accuracy check
 			if (rand() % 100 + 1 > (pkmn1.moveACC[ind]*(pkmn1.ACC/pkmn2.EVA))){
 				std::cout << pkmn1.name << " missed!" << std::endl;

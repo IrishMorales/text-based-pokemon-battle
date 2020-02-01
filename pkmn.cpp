@@ -372,10 +372,12 @@ void returnToBegin(std::ifstream& file) {
 void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
 	std::cout << "\n";
 	printShortSep();
-	std::cout << pkmn1.name << " LVL " << pkmn1.lvl << " ACC: " << pkmn1.ACC << " ACCmult: " << pkmn1.ACCmult << "\n";
+	std::cout << pkmn1.name << " LVL " << pkmn1.lvl << "\n";
+	//std::cout << pkmn1.name << " LVL " << pkmn1.lvl << " ACC: " << pkmn1.ACC << " ACCmult: " << pkmn1.ACCmult << "\n";
 	std::cout << "HP: " << pkmn1.HP << "/" << pkmn1.baseHP << "\nATK: " << pkmn1.ATK << " DEF: " << pkmn1.DEF << " SATK: " << pkmn1.SATK << " SDEF: " << pkmn1.SDEF << " SPD: " << pkmn1.SPD << "\n";
 	printShortSep();
-	std::cout << pkmn2.name << " LVL " << pkmn2.lvl << " ACC: " << pkmn2.ACC << " ACCmult: " << pkmn2.ACCmult << " (WILD)\n";
+	std::cout << pkmn2.name << " LVL " << pkmn2.lvl << " (WILD)\n";
+	//std::cout << pkmn2.name << " LVL " << pkmn2.lvl << " ACC: " << pkmn2.ACC << " ACCmult: " << pkmn2.ACCmult << " (WILD)\n";
 	std::cout << "HP: " << pkmn2.HP << "/" << pkmn2.baseHP << "\nATK: " << pkmn2.ATK << " DEF: " << pkmn2.DEF << " SATK: " << pkmn2.SATK << " SDEF: " << pkmn2.SDEF << " SPD: " << pkmn2.SPD << "\n";
 	printShortSep();
 	std::cout << "\n";
@@ -483,13 +485,13 @@ bool Pkmn::PPCheck(int moveIndex) {
 
 bool Pkmn::missCheck(Pkmn pkmnB, int moveIndex) {
 	int threshold = static_cast<int>(moveACC[moveIndex] * ACC * pkmnB.EVA / 10000);
+	std::srand(std::time(NULL));
 	int randNum = rand() % 101;
-	srand(time(0));
 	
-	std:: cout << moveACC[moveIndex] << " " << ACC << " " << pkmnB.EVA << std::endl;
+	//std:: cout << moveACC[moveIndex] << " " << ACC << " " << pkmnB.EVA << std::endl;
 	
 	if (randNum > threshold){
-		std::cout << name << " missed! THRES:" << threshold << " RAND: " << randNum << std::endl;
+		std::cout << name << " missed! " /*<< threshold << " RAND: " << randNum*/ << std::endl;
 		return true;
 	}
 	return false;

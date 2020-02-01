@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <chrono>
 #include <ctime>
@@ -209,7 +210,7 @@ void Pkmn::printPkmnMoves() {
 	std::cout << name << "'s Moveset:\n";
 	std::cout << " [#]  Move\n";
 	for (int i = 0; i < 4; ++i) {
-		std::cout << " [" << i << "]  " << move[i] << "    PP: " << movePP[i] << "/" << movebasePP[i] << "\n";
+		std::cout << " [" << i << "]  " << std::left << std::setw(14) << move[i] << "PP: " << movePP[i] << "/" << movebasePP[i] << "\n";
 	}
 	printCurlySep();
 }

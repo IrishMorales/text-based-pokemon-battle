@@ -35,6 +35,8 @@ class Pkmn {
 		void printPkmnMoves();
 		void debug();
 		
+		bool missCheck(Pkmn pkmnB, int moveIndex);
+
 		//PP-related functions
 		bool PPCheck(int moveIndex);
 		bool struggleCheck();
@@ -76,8 +78,8 @@ class Pkmn {
 		int moveMaxRep[4];
 		
 		//pkmn hidden stats
-		int ACC = 1; //100/100
-		int EVA = 1; //100/100
+		int ACC = 100;
+		int EVA = 100;
 		
 		//pkmn base stats - stat when multiplier is 0
 		int baseHP;

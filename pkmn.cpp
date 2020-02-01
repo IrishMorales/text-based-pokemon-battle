@@ -373,9 +373,11 @@ void printBothPkmnInfo(Pkmn pkmn1, Pkmn pkmn2) {
 	std::cout << "\n";
 	printShortSep();
 	std::cout << pkmn1.name << " LVL " << pkmn1.lvl << "\n";
+	//std::cout << pkmn1.name << " LVL " << pkmn1.lvl << " ACC: " << pkmn1.ACC << " ACCmult: " << pkmn1.ACCmult << "\n";
 	std::cout << "HP: " << pkmn1.HP << "/" << pkmn1.baseHP << "\nATK: " << pkmn1.ATK << " DEF: " << pkmn1.DEF << " SATK: " << pkmn1.SATK << " SDEF: " << pkmn1.SDEF << " SPD: " << pkmn1.SPD << "\n";
 	printShortSep();
 	std::cout << pkmn2.name << " LVL " << pkmn2.lvl << " (WILD)\n";
+	//std::cout << pkmn2.name << " LVL " << pkmn2.lvl << " ACC: " << pkmn2.ACC << " ACCmult: " << pkmn2.ACCmult << " (WILD)\n";
 	std::cout << "HP: " << pkmn2.HP << "/" << pkmn2.baseHP << "\nATK: " << pkmn2.ATK << " DEF: " << pkmn2.DEF << " SATK: " << pkmn2.SATK << " SDEF: " << pkmn2.SDEF << " SPD: " << pkmn2.SPD << "\n";
 	printShortSep();
 	std::cout << "\n";
@@ -397,7 +399,7 @@ void Pkmn::moveEffect(Pkmn& pkmnB, int ind, bool& inBattle) {
 	Repeating moves (PREPR):
 	Index, Move, Type, Category, PP, Power, Accuracy, Min Repetitions, Max Repetitions
 	
-	//!!!CHECK EVA STAT MODIFIERS: SHOULD BE OPPOSITE ACC
+	For this program, EVA stages are not opposite ACC stages (e.g. EVA higher by 1 stage is stored as -1 instead of +1)
 	*/
 	if (cat == "PHYSICAL")		{pkmnB.HP -= dmg(lvl, movePWR[ind], ATK, pkmnB.DEF);}
 	else if (cat == "SPECIAL")	{pkmnB.HP -= dmg(lvl, movePWR[ind], SATK, pkmnB.SDEF);}
@@ -409,8 +411,8 @@ void Pkmn::moveEffect(Pkmn& pkmnB, int ind, bool& inBattle) {
 		else if (cat == "SATKO"){pkmnB.SATKmult= pkmnB.modMult(pkmnB.SATKmult,movePWR[ind]);	pkmnB.SATK= pkmnB.modStat(pkmnB.baseSATK, pkmnB.SATKmult);}
 		else if (cat == "SDEFO"){pkmnB.SDEFmult= pkmnB.modMult(pkmnB.SDEFmult,movePWR[ind]);	pkmnB.SDEF= pkmnB.modStat(pkmnB.baseSDEF, pkmnB.SDEFmult);}
 		else if (cat == "SPDO")	{pkmnB.SPDmult = pkmnB.modMult(pkmnB.SPDmult, movePWR[ind]); 	pkmnB.SPD = pkmnB.modStat(pkmnB.baseSPD, pkmnB.SPDmult);}
-		else if (cat == "ACCO")	{pkmnB.ACCmult = pkmnB.modMult(pkmnB.ACCmult, movePWR[ind]);	pkmnB.ACC = pkmnB.modStat(pkmnB.ACC, pkmnB.ACCmult);}
-		else if (cat == "EVAO")	{pkmnB.EVAmult = pkmnB.modMult(pkmnB.EVAmult, movePWR[ind]);	pkmnB.EVA = pkmnB.modStat(pkmnB.EVA, pkmnB.EVAmult);}
+		else if (cat == "ACCO")	{pkmnB.ACCmult = pkmnB.modMult(pkmnB.ACCmult, movePWR[ind]);	pkmnB.ACC = pkmnB.modStat(100, pkmnB.ACCmult);}
+		else if (cat == "EVAO")	{pkmnB.EVAmult = pkmnB.modMult(pkmnB.EVAmult, movePWR[ind]);	pkmnB.EVA = pkmnB.modStat(100, pkmnB.EVAmult);}
 		
 		//change stat of self
 		else if (cat == "ATKS")	{ATKmult = modMult(ATKmult, movePWR[ind]); 	ATK = modStat(baseATK, ATKmult);}
@@ -481,6 +483,20 @@ bool Pkmn::PPCheck(int moveIndex) {
 	}
 }
 
+bool Pkmn::missCheck(Pkmn pkmnB, int moveIndex) {
+	int threshold = static_cast<int>(moveACC[moveIndex] * ACC * pkmnB.EVA / 10000);
+	std::srand(std::time(NULL));
+	int randNum = rand() % 101;
+	
+	//std:: cout << moveACC[moveIndex] << " " << ACC << " " << pkmnB.EVA << std::endl;
+	
+	if (randNum > threshold){
+		std::cout << name << " missed! " /*<< threshold << " RAND: " << randNum*/ << std::endl;
+		return true;
+	}
+	return false;
+}
+
 void Pkmn::struggle(Pkmn& oppPkmn) {
 	std::cout << name << " has no moves left!\n";
 	std::cout << name << " used Struggle!\n";
@@ -495,20 +511,20 @@ void Pkmn::makeMove(Pkmn& pkmnB, bool isPlayer, bool& inBattle, std::ifstream& p
 	
 	//if any move still has PP, move
 	if (!struggleCheck()) {
+		int moveIndex;
 		//if player is moving
 		if (isPlayer) {
 			std::cout << "What should " << name << " do?\n";
 		
-			int moveIndex = distance(move, find(move, move + 4, getValidMove(pkmnMoves, true)));
+			moveIndex = distance(move, find(move, move + 4, getValidMove(pkmnMoves, true)));
 			
 			if (PPCheck(moveIndex)) {std::cout << name << " used " << move[moveIndex] << "!\n";}
-			moveEffect(pkmnB, moveIndex, inBattle);
 		}
 		//if opponent is moving
 		else {
 			//get index for random move
 			srand(time(0));
-			int moveIndex = rand() % 4;	
+			moveIndex = rand() % 4;	
 			
 			while (movePP[moveIndex] == 0) {
 				srand(time((long int*)moveIndex));
@@ -516,8 +532,9 @@ void Pkmn::makeMove(Pkmn& pkmnB, bool isPlayer, bool& inBattle, std::ifstream& p
 			}
 			
 			if (PPCheck(moveIndex)) {std::cout << "The wild " << name << " used " << move[moveIndex] << "!\n";}
-			moveEffect(pkmnB, moveIndex, inBattle);
 		}
+		
+		if (!missCheck(pkmnB, moveIndex)) {moveEffect(pkmnB, moveIndex, inBattle);}
 	}
 	//if no PP, struggle
 	else {

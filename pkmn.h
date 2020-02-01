@@ -99,7 +99,7 @@ class Pkmn {
 		int EVAmult = 0;
 };
 
-std::string capitalize(std::string s);
+std::string format(std::string s);
 
 //print separators
 void printLongSep();

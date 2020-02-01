@@ -3,7 +3,16 @@
 #include <algorithm>
 #include <chrono>
 #include <ctime>
+#include <string>
 #include "pkmn.h"
+
+std::string trim(const std::string& line)
+{
+    const char* WhiteSpace = " \t\v\r\n";
+    std::size_t start = line.find_first_not_of(WhiteSpace);
+    std::size_t end = line.find_last_not_of(WhiteSpace);
+    return start == end ? std::string() : line.substr(start, end - start + 1);
+}
 
 //check if name is valid
 bool Pkmn::checkValidName(std::string tmpName, std::ifstream& pkmnList) {
@@ -45,7 +54,7 @@ std::string Pkmn::getValidName(std::ifstream& pkmnList) {
 		std::cout << "YOU: ";
 		std::getline (std::cin, tmpName);
 		std::cout << "\n";
-		tmpName = capitalize(tmpName);
+		tmpName = format(tmpName);
 		validName = checkValidName(tmpName, pkmnList);
 	}
 	return tmpName;
@@ -54,6 +63,7 @@ std::string Pkmn::getValidName(std::ifstream& pkmnList) {
 //check if lvl is valid
 bool Pkmn::checkValidLvl(std::string tmpLvl) {
 	//lvl must be within 1-100
+	tmpLvl = format(tmpLvl);
 	if (tmpLvl.find_first_not_of("1234567890") != std::string::npos || !(stoi(tmpLvl) > 0 && stoi(tmpLvl) < 101)) {
 		std::cout << "Level '" << tmpLvl << "' doesn't seem right.\n";
 		std::cout << "\n";
@@ -145,7 +155,7 @@ std::string Pkmn::getValidMove(std::ifstream& pkmnMoves, bool inBattle) {
 		std::cout << "YOU: ";
 		std::getline (std::cin, tmpMove);
 		std::cout << "\n";
-		tmpMove = capitalize(tmpMove);
+		tmpMove = format(tmpMove);
 		validMove = checkValidMove(tmpMove, pkmnMoves, inBattle);
 	}
 	
@@ -292,9 +302,9 @@ Pkmn::Pkmn(std::ifstream& pkmnList, std::ifstream& pkmnMoves) {
 }
 
 //capitalize entire std::string
-std::string capitalize(std::string s) {
+std::string format(std::string s) {
 	for (unsigned int i = 0; i < s.length(); ++i) s[i]=toupper(s[i]);
-	return s;
+	return trim(s);
 }
 
 //print separators
